@@ -51,3 +51,52 @@ $ docker push 149531492934.dkr.ecr.ap-south-1.amazonaws.com/shaala-back-spring:l
 ```html
 info@globalshaala.com
 globalively
+
+#### Liquibase 
+https://www.baeldung.com/liquibase-refactor-schema-of-java-app#hibernate
+Dependency to use liquibase
+```html
+<dependency>
+    <groupId>org.liquibase</groupId>
+     <artifactId>liquibase-core</artifactId>
+      <version>3.4.1</version>
+</dependency>
+```
+Plugin to generate changelog using maven command `mvn liquibase:generateChangeLog`
+```html
+<plugins>
+    <plugin>
+        <groupId>org.liquibase</groupId>
+        <artifactId>liquibase-maven-plugin</artifactId>
+        <version>3.4.1</version>
+        <configuration>                  
+            <propertyFile>src/main/resources/liquibase.properties</propertyFile>
+        </configuration> 
+        <dependencies>
+            <dependency>
+                <groupId>org.liquibase.ext</groupId>
+                <artifactId>liquibase-hibernate4</artifactId>
+                <version>3.5</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-beans</artifactId>
+                <version>4.1.7.RELEASE</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.data</groupId>
+                <artifactId>spring-data-jpa</artifactId>
+                <version>1.7.3.RELEASE</version>
+            </dependency>
+        </dependencies>               
+    </plugin> 
+</plugins>
+```
+`liquibase.properties`
+```html 
+url=jdbc:mysql://localhost:3306/oauth_reddit
+username=tutorialuser
+password=tutorialmy5ql
+driver=com.mysql.jdbc.Driver
+outputChangeLogFile=src/main/resources/liquibase-outputChangeLog.xml
+```
