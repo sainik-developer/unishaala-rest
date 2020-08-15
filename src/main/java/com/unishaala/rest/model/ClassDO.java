@@ -5,25 +5,22 @@ import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Data
-@Entity(name = "sessions")
+@Entity(name = "classes")
 @AllArgsConstructor
-public class Session {
+public class ClassDO {
     @Id
     @GeneratedValue(generator = "system-uuid")
     @GenericGenerator(name = "system-uuid", strategy = "uuid")
     private UUID id;
-    private LocalDateTime at;
-    @OneToOne(optional = false)
-    @JoinColumn(name = "course_id", nullable = false)
-    private Course course;
-    @OneToOne(optional = false)
+    @Column(name = "class_name")
+    private String className;
+    @ManyToOne
     @JoinColumn(name = "school_id", nullable = false)
-    private School school;
-    @OneToOne(optional = false)
-    @JoinColumn(name = "class_id", nullable = false)
-    private Class aClass;
+    private SchoolDO schoolDO;
+    @OneToMany
+    private List<UserDO> userDOS;
 }

@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotEmpty;
 import java.util.UUID;
 
 @Data
@@ -16,5 +17,6 @@ public class ClassDTO {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private UUID id;
     @JsonProperty(value = "name")
+    @NotEmpty
     private String className;
 }

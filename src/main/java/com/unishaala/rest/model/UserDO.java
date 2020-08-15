@@ -11,7 +11,7 @@ import java.util.UUID;
 @Data
 @Entity(name = "user")
 @AllArgsConstructor
-public class User {
+public class UserDO {
     @Id
     @GeneratedValue(generator = "system-uuid")
     @GenericGenerator(name = "system-uuid", strategy = "uuid")
@@ -26,5 +26,5 @@ public class User {
     private String avatarUrl;
     @ManyToOne
     @JoinColumn(name = "class_id", referencedColumnName = "id", nullable = true)
-    private Class relatedClass;
+    private ClassDO relatedClassDO;
 }

@@ -1,24 +1,24 @@
 package com.unishaala.rest.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
-import java.util.List;
 import java.util.UUID;
 
 @Data
-@Entity(name = "schools")
-public class School {
+@AllArgsConstructor
+@Entity(name = "courses")
+public class CourseDO {
     @Id
     @GeneratedValue(generator = "system-uuid")
     @GenericGenerator(name = "system-uuid", strategy = "uuid")
     private UUID id;
     private String name;
-    @Column(name = "created_date")
-    private LocalDateTime createdDate;
-    private String address;
-    @OneToMany(mappedBy = "schools")
-    private List<Class> classes;
+    @OneToOne(optional = false)
+    @JoinColumn(name = "teacher_id", nullable = false)
+    private TeacherDO teacherDO;
+    private String details;
+    private String urlCourse;
 }
