@@ -13,7 +13,7 @@ import org.springframework.data.redis.core.TimeToLive;
 @AllArgsConstructor
 @RequiredArgsConstructor
 public class Otp {
-    private String phoneNumber;
+    private String id;
     private String otp;
     @TimeToLive
     private Long timeout = 30L;

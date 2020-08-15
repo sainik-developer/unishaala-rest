@@ -1,4 +1,4 @@
-package com.unishaala.rest.security.jwt;
+package com.unishaala.rest.service;
 
 import com.unishaala.rest.enums.UserType;
 import io.jsonwebtoken.Claims;
@@ -7,21 +7,21 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
 import java.util.Date;
 import java.util.UUID;
 
-@Component
-public class JwtUtils {
-    @Value("${spring.jwtutils.key}")
+@Service
+public class JwtService {
+    @Value("${jwt.key}")
     private String JWT_SIGN_KEY;
-    @Value("${spring.jwtutils.admin.timeout.days}")
+    @Value("${jwt.admin.timeout.days}")
     private int JWT_ADMIN_EXPIRATION;
-    @Value("${spring.jwtutils.user.timeout.days}")
+    @Value("${jwt.user.timeout.days}")
     private int JWT_USER_EXPIRATION;
-    @Value("${spring.jwtutils.teacher.timeout.days}")
+    @Value("${jwt.teacher.timeout.days}")
     private int JWT_TEACHER_EXPIRATION;
 
     public final static String JWT_CLAIM_ID = "id";

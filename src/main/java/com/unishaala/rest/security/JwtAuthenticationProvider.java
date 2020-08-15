@@ -1,6 +1,6 @@
 package com.unishaala.rest.security;
 
-import com.unishaala.rest.security.jwt.JwtUtils;
+import com.unishaala.rest.service.JwtService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -21,16 +21,16 @@ import java.util.Optional;
 @Component
 @RequiredArgsConstructor
 public class JwtAuthenticationProvider implements AuthenticationProvider {
-    private final JwtUtils jwtUtils;
+    private final JwtService jwtService;
 
     // JWT support from unishaala-rest
     @Override
     public Authentication authenticate(final Authentication authentication) throws AuthenticationException {
         return Optional.of(authentication instanceof JwtAuthenticationToken)
-                .filter(aBoolean -> aBoolean && jwtUtils.isValid((String) authentication.getCredentials()))
-                .map(aBoolean -> jwtUtils.getClaims((String) authentication.getCredentials()))
-                .filter(claims -> Objects.nonNull(claims.get(JwtUtils.JWT_CLAIM_ID)) && Objects.nonNull(claims.get(JwtUtils.JWT_CLAIM_ROLE)))
-                .map(claims -> new JwtAuthenticationToken(new AuthUserDetails((String) claims.get(JwtUtils.JWT_CLAIM_ID)), (String) authentication.getCredentials(), Collections.singletonList(new SimpleGrantedAuthority((String) claims.get(JwtUtils.JWT_CLAIM_ROLE)))))
+                .filter(aBoolean -> aBoolean && jwtService.isValid((String) authentication.getCredentials()))
+                .map(aBoolean -> jwtService.getClaims((String) authentication.getCredentials()))
+                .filter(claims -> Objects.nonNull(claims.get(JwtService.JWT_CLAIM_ID)) && Objects.nonNull(claims.get(JwtService.JWT_CLAIM_ROLE)))
+                .map(claims -> new JwtAuthenticationToken(new AuthUserDetails((String) claims.get(JwtService.JWT_CLAIM_ID)), (String) authentication.getCredentials(), Collections.singletonList(new SimpleGrantedAuthority((String) claims.get(JwtService.JWT_CLAIM_ROLE)))))
                 .orElse(null);
     }
 
