@@ -8,20 +8,29 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 
 @Getter
-public final class BearerAuthenticationToken extends AbstractAuthenticationToken {
+public final class JwtAuthenticationToken extends AbstractAuthenticationToken {
 
     private final String credentials;
     private final UserDetails principal;
 
-    public BearerAuthenticationToken(final String token) {
+    /**
+     * @param token is the JWT token
+     */
+    public JwtAuthenticationToken(final String token) {
         super(null);
         this.credentials = token;
         this.principal = null;
         setAuthenticated(false);
     }
 
-    public BearerAuthenticationToken(final UserDetails userDetails, final String token,
-                                     final Collection<? extends GrantedAuthority> authorities) {
+    /***
+     *
+     * @param userDetails
+     * @param token
+     * @param authorities
+     */
+    public JwtAuthenticationToken(final UserDetails userDetails, final String token,
+                                  final Collection<? extends GrantedAuthority> authorities) {
         super(authorities);
         this.principal = userDetails;
         this.credentials = token;

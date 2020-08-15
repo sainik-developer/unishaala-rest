@@ -18,7 +18,7 @@ public class User {
     private UUID id;
     @Column(name = "user_name")
     private String userName;
-    @Column(name = "mobile_number")
+    @Column(name = "mobile_number", nullable = false)
     private String mobileNumber;
     @Column(name = "user_type")
     private UserType userType;

@@ -51,11 +51,11 @@ $ docker push 149531492934.dkr.ecr.ap-south-1.amazonaws.com/shaala-back-spring:l
 ```html
 info@globalshaala.com
 globalively
-
+```
 #### Liquibase 
 https://www.baeldung.com/liquibase-refactor-schema-of-java-app#hibernate
 Dependency to use liquibase
-```html
+```text
 <dependency>
     <groupId>org.liquibase</groupId>
      <artifactId>liquibase-core</artifactId>
@@ -63,7 +63,7 @@ Dependency to use liquibase
 </dependency>
 ```
 Plugin to generate changelog using maven command `mvn liquibase:generateChangeLog`
-```html
+```text
 <plugins>
     <plugin>
         <groupId>org.liquibase</groupId>
