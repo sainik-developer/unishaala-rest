@@ -1,15 +1,16 @@
 # unishaala-REST-api
 ### AWS credentials global shaala
-```html
+```text
 * info@globalshaala.com
 * Freebies1!
 ```
 ### Access POSTGRES RDS local and AWS
 ##### Local Access to RDS localhost 
-```groovy
+```text
 $ sudo -u postgres psql postgres
 $ \c unishaal
-$ \dt
+$ \dt // list all tables
+$ \d <table-name> // for table description
 $ SELECT * FROM <table_name>
 ```
 ##### Access to Postgres on AWS RDS

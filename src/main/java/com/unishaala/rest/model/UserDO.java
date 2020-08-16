@@ -10,7 +10,7 @@ import javax.persistence.*;
 import java.util.UUID;
 
 @Data
-@Entity(name = "user")
+@Entity(name = "users")
 @NoArgsConstructor
 public class UserDO {
     @Id

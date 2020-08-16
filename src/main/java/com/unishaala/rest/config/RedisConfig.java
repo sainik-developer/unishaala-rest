@@ -1,26 +1,30 @@
 package com.unishaala.rest.config;
 
+import com.unishaala.rest.model.Otp;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
 import org.springframework.data.redis.serializer.GenericToStringSerializer;
 
 @Configuration
-@ComponentScan("com.unishaala.rest")
-@EnableRedisRepositories(basePackages = "com.unishaala.rest.repository")
 public class RedisConfig {
-    @Bean
-    JedisConnectionFactory jedisConnectionFactory() {
-        return new JedisConnectionFactory();
-    }
+    @Value("${spring.redis.host}")
+    private String REDIS_HOST;
+    @Value("${spring.redis.port}")
+    private int REDIS_PORT;
+
+//    @Bean
+//    public JedisConnectionFactory jedisConnectionFactory() {
+//        RedisStandaloneConfiguration config = new RedisStandaloneConfiguration(REDIS_HOST, REDIS_PORT);
+//        return new JedisConnectionFactory(config);
+//    }
 
     @Bean
-    public RedisTemplate<String, Object> redisTemplate() {
-        final RedisTemplate<String, Object> template = new RedisTemplate<String, Object>();
-        template.setConnectionFactory(jedisConnectionFactory());
+    public RedisTemplate<String, Otp> redisTemplate(RedisConnectionFactory connectionFactory) {
+        final RedisTemplate<String, Otp> template = new RedisTemplate<>();
+        template.setConnectionFactory(connectionFactory);
         template.setValueSerializer(new GenericToStringSerializer<>(Object.class));
         return template;
     }

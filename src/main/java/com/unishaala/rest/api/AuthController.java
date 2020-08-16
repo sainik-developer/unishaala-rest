@@ -10,11 +10,13 @@ import com.unishaala.rest.repository.UserRepository;
 import com.unishaala.rest.service.AuthService;
 import com.unishaala.rest.service.JwtService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+@Log4j2
 @RestController("/auth")
 @RequiredArgsConstructor
 public class AuthController {
@@ -30,7 +32,7 @@ public class AuthController {
             authService.sendOtp(formattedPhoneNumber);
             return BaseResponseDTO.builder().success(true).build();
         }
-        throw new UserNotFoundException("phone Number is not belong to admin!");
+        throw new UserNotFoundException("phone Number does not belong to admin!");
     }
 
     @PostMapping("/teacher/sendotp")
