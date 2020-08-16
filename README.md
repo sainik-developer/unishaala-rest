@@ -8,7 +8,7 @@
 ##### Local Access to RDS localhost 
 ```groovy
 $ sudo -u postgres psql postgres
-$ \c shaala
+$ \c unishaal
 $ \dt
 $ SELECT * FROM <table_name>
 ```
@@ -99,4 +99,26 @@ username=tutorialuser
 password=tutorialmy5ql
 driver=com.mysql.jdbc.Driver
 outputChangeLogFile=src/main/resources/liquibase-outputChangeLog.xml
+```
+
+### Dev Details for unix based system
+
+#### Redis debian command on 
+1. Status of Redis : `sudo systemctl status redis`
+2. Stop redis as service `sudo systemctl stop redis`
+3. Start redis as service : `sudo systemctl start redis`
+4. Restart redis as service : `sudo systemctl restart redis`
+#### Postgres debian command 
+1. Status (running or stopped) : `sudo systemctl status postgresql`
+2. Start : `sudo systemctl start postgresql`
+3. Stop : `sudo systemctl stop postgresql`
+4. Restart : `sudo systemctl restart postgresql`
+
+
+#### How to run the app using mvn
+```text
+mvn spring-boot:run -Dspring-boot.run.profiles=dev
+```
+```text
+-Dspring.profiles.active=dev
 ```

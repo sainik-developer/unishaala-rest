@@ -1,6 +1,7 @@
 package com.unishaala.rest.model;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -10,6 +11,7 @@ import java.util.UUID;
 
 @Data
 @Entity(name = "schools")
+@NoArgsConstructor
 public class SchoolDO {
     @Id
     @GeneratedValue(generator = "system-uuid")
@@ -19,6 +21,6 @@ public class SchoolDO {
     @Column(name = "created_date")
     private LocalDateTime createdDate;
     private String address;
-    @OneToMany(mappedBy = "schools")
+    @OneToMany
     private List<ClassDO> classDOS;
 }

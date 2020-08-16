@@ -1,9 +1,6 @@
 package com.unishaala.rest.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 import org.springframework.data.redis.core.RedisHash;
 import org.springframework.data.redis.core.TimeToLive;
 
@@ -11,7 +8,7 @@ import org.springframework.data.redis.core.TimeToLive;
 @Builder
 @RedisHash("otp")
 @AllArgsConstructor
-@RequiredArgsConstructor
+@NoArgsConstructor
 public class Otp {
     private String id;
     private String otp;

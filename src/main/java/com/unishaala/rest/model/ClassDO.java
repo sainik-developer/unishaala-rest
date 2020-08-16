@@ -2,6 +2,7 @@ package com.unishaala.rest.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -10,7 +11,7 @@ import java.util.UUID;
 
 @Data
 @Entity(name = "classes")
-@AllArgsConstructor
+@NoArgsConstructor
 public class ClassDO {
     @Id
     @GeneratedValue(generator = "system-uuid")
@@ -19,7 +20,7 @@ public class ClassDO {
     @Column(name = "class_name")
     private String className;
     @ManyToOne
-    @JoinColumn(name = "school_id", nullable = false)
+    @JoinColumn(name = "school_id", referencedColumnName = "id",nullable = false)
     private SchoolDO schoolDO;
     @OneToMany
     private List<UserDO> userDOS;
