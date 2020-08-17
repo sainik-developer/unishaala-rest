@@ -14,7 +14,7 @@ public class AppErrorAdvice {
     @ExceptionHandler(value = UserNotFoundException.class)
     @ResponseStatus(HttpStatus.EXPECTATION_FAILED)
     public BaseErrorDTO notAdminException(final Exception e) {
-        return new BaseErrorDTO(e.getMessage());
+        return BaseErrorDTO.builder().message(e.getMessage()).build();
     }
 
     @ExceptionHandler(value = MobileNumberFormatException.class)

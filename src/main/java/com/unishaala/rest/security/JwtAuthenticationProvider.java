@@ -1,15 +1,21 @@
 package com.unishaala.rest.security;
 
 import com.unishaala.rest.service.JwtService;
+import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.authentication.dao.AbstractUserDetailsAuthenticationProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -20,18 +26,24 @@ import java.util.Optional;
 @Log4j2
 @Component
 @RequiredArgsConstructor
-public class JwtAuthenticationProvider implements AuthenticationProvider {
+public class JwtAuthenticationProvider extends AbstractUserDetailsAuthenticationProvider {
     private final JwtService jwtService;
 
-    // JWT support from unishaala-rest
     @Override
-    public Authentication authenticate(final Authentication authentication) throws AuthenticationException {
-        return Optional.of(authentication instanceof JwtAuthenticationToken)
-                .filter(aBoolean -> aBoolean && jwtService.isValid((String) authentication.getCredentials()))
-                .map(aBoolean -> jwtService.getClaims((String) authentication.getCredentials()))
-                .filter(claims -> Objects.nonNull(claims.get(JwtService.JWT_CLAIM_ID)) && Objects.nonNull(claims.get(JwtService.JWT_CLAIM_ROLE)))
-                .map(claims -> new JwtAuthenticationToken(new AuthUserDetails((String) claims.get(JwtService.JWT_CLAIM_ID)), (String) authentication.getCredentials(), Collections.singletonList(new SimpleGrantedAuthority((String) claims.get(JwtService.JWT_CLAIM_ROLE)))))
-                .orElse(null);
+    protected void additionalAuthenticationChecks(UserDetails userDetails, UsernamePasswordAuthenticationToken authentication) throws AuthenticationException {
+    }
+
+    @Override
+    protected UserDetails retrieveUser(String username, UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken) throws AuthenticationException {
+        final JwtAuthenticationToken jwtAuthenticationToken = (JwtAuthenticationToken) usernamePasswordAuthenticationToken;
+        final String token = jwtAuthenticationToken.getToken();
+        if (!jwtService.isValid(token)) {
+            throw new RuntimeException("JWT Token is incorrect");
+        }
+        final Claims claims = jwtService.getClaims(token);
+        List<GrantedAuthority> grantedAuthorities = AuthorityUtils
+                .commaSeparatedStringToAuthorityList((String) claims.get(JwtService.JWT_CLAIM_ROLE));
+        return new JwtUserDetails((String) claims.get(JwtService.JWT_CLAIM_ID), token, grantedAuthorities);
     }
 
     @Override

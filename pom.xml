@@ -17,7 +17,7 @@
         <aws.s3.sdk.version>1.11.641</aws.s3.sdk.version>
         <apache.common.version>3.9</apache.common.version>
         <org.mapstruct.version>1.3.1.Final</org.mapstruct.version>
-        <spring.doc.version>1.2.32</spring.doc.version>
+        <spring.doc.version>1.4.4</spring.doc.version>
         <maven.compiler.plugin.version>3.6.1</maven.compiler.plugin.version>
         <lib.phone.number.version>3.5</lib.phone.number.version>
         <!--Java version-->
@@ -29,6 +29,10 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
         <!-- jpa database -->
         <dependency>
@@ -55,6 +59,11 @@
         <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-ui</artifactId>
+            <version>${spring.doc.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-security</artifactId>
             <version>${spring.doc.version}</version>
         </dependency>
         <!-- spring logs -->
@@ -152,6 +161,7 @@
                     </annotationProcessorPaths>
                 </configuration>
             </plugin>
+
             <!--            <plugin>-->
             <!--                <groupId>org.liquibase</groupId>-->
             <!--                <artifactId>liquibase-maven-plugin</artifactId>-->
@@ -176,6 +186,19 @@
             <!--                        <version>1.7.3.RELEASE</version>-->
             <!--                    </dependency>-->
             <!--                </dependencies>-->
+            <!--            </plugin>-->
+            <!--            <plugin>-->
+            <!--                <groupId>org.springdoc</groupId>-->
+            <!--                <artifactId>springdoc-openapi-maven-plugin</artifactId>-->
+            <!--                <version>1.0</version>-->
+            <!--                <executions>-->
+            <!--                    <execution>-->
+            <!--                        <id>integration-test</id>-->
+            <!--                        <goals>-->
+            <!--                            <goal>generate</goal>-->
+            <!--                        </goals>-->
+            <!--                    </execution>-->
+            <!--                </executions>-->
             <!--            </plugin>-->
         </plugins>
     </build>

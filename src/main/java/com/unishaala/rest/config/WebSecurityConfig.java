@@ -1,23 +1,26 @@
 package com.unishaala.rest.config;
 
-import com.unishaala.rest.security.JwtAuthFilter;
+import com.unishaala.rest.security.JwtAuthenticationEntryPoint;
+import com.unishaala.rest.security.JwtAuthenticationProvider;
+import com.unishaala.rest.security.JwtAuthenticationTokenFilter;
+import com.unishaala.rest.security.JwtSuccessHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.http.HttpServletResponse;
-import java.util.List;
+import java.util.Collections;
 
 /**
  * Base class for web security. This class sets adds the authentication providers, which get called
@@ -27,45 +30,38 @@ import java.util.List;
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
-@ComponentScan(basePackages = "com.unishaala.rest")
-@EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-    private final List<AuthenticationProvider> authenticationProviders;
+    private JwtAuthenticationProvider authenticationProvider;
+    private JwtAuthenticationEntryPoint entryPoint;
+
 
     @Bean
-    @Override
-    public AuthenticationManager authenticationManagerBean() throws Exception {
-        return super.authenticationManagerBean();
+    public AuthenticationManager authenticationManager() {
+        return new ProviderManager(Collections.singletonList(authenticationProvider));
     }
 
-    @Override
-    public void configure(final AuthenticationManagerBuilder builder) throws Exception {
-        authenticationProviders.forEach(builder::authenticationProvider);
-    }
 
-    private OncePerRequestFilter getJwtAuthFilter() throws Exception {
-        return new JwtAuthFilter(authenticationManagerBean());
+    @Bean
+    public JwtAuthenticationTokenFilter authenticationTokenFilter() {
+        JwtAuthenticationTokenFilter filter = new JwtAuthenticationTokenFilter();
+        filter.setAuthenticationManager(authenticationManager());
+        filter.setAuthenticationSuccessHandler(new JwtSuccessHandler());
+        return filter;
     }
 
     @Override
     protected void configure(final HttpSecurity httpSecurity) throws Exception {
-        httpSecurity.anonymous().disable()
-                // CSRF ? what is it ?
-                .csrf().disable()
-                .rememberMe().disable()
-                // REST comes with request cache not required
-                .requestCache().disable()
-                // auth entry points are open to bypass jwt authentication
-                .authorizeRequests().antMatchers("/auth/").permitAll()
-                // rest all request are authenticated
-                .anyRequest().authenticated()
+        httpSecurity.csrf().disable()
+                .authorizeRequests().antMatchers("**/rest/**").authenticated()
                 .and()
-                // how to handle the unauthenticated request
-                .exceptionHandling().authenticationEntryPoint((request, response, authException) -> response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized"))
+                .exceptionHandling().authenticationEntryPoint(entryPoint)
                 .and()
-                // state less service for REST end points
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-        httpSecurity.addFilterBefore(getJwtAuthFilter(), UsernamePasswordAuthenticationFilter.class);
+
+        httpSecurity.addFilterBefore(authenticationTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+        httpSecurity.headers().cacheControl();
+
     }
 
 }
