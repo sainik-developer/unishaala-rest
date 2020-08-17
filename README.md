@@ -123,3 +123,8 @@ mvn spring-boot:run -Dspring-boot.run.profiles=dev
 ```text
 -Dspring.profiles.active=dev
 ```
+
+#### How to access the openapi/swagger documentation
+```text
+http://localhost:8080/swagger-ui.html
+```
