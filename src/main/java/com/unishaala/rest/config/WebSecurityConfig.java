@@ -34,10 +34,12 @@ import java.util.Collections;
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private final JwtAuthenticationProvider authenticationProvider;
     private final JwtAuthenticationEntryPoint entryPoint;
+
     @Bean
     public AuthenticationManager authenticationManager() {
         return new ProviderManager(Collections.singletonList(authenticationProvider));
     }
+
     @Bean
     public JwtAuthenticationTokenFilter authenticationTokenFilter() {
         JwtAuthenticationTokenFilter filter = new JwtAuthenticationTokenFilter();
@@ -45,6 +47,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         filter.setAuthenticationSuccessHandler(new JwtSuccessHandler());
         return filter;
     }
+
     @Override
     protected void configure(final HttpSecurity httpSecurity) throws Exception {
         httpSecurity.csrf().disable()
