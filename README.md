@@ -30,24 +30,24 @@ Default region name [None]: ap-south-1
 Default output format [None]: json
 ```
 ##### Retrieve an authentication token and authenticate your Docker client to your registry.
-```groovy
+```text
 $ aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 149531492934.dkr.ecr.ap-south-1.amazonaws.com
-$ unzip awscliv2.zip
-$ sudo ./aws/install
 ```
 #### Build app and make docker and push to AWS ECR
-```html
-$ ./gradlew clean bootJar
-$ docker build -t spring-shaala:<version> .
-$ docker tag shaala-back-spring:<version> 149531492934.dkr.ecr.ap-south-1.amazonaws.com/shaala-back-spring:latest
-$ docker push 149531492934.dkr.ecr.ap-south-1.amazonaws.com/shaala-back-spring:latest
+```text
+$ mvn clean install package
+$ docker build -t unishaala-rest:<version> .
+$ docker tag unishaala-rest:<version> 149531492934.dkr.ecr.ap-south-1.amazonaws.com/unishaala-rest:latest
+$ docker push 149531492934.dkr.ecr.ap-south-1.amazonaws.com/unishaala-rest:latest
 ```
+
+run docker locally 
+`docker run --publish 8000:8080 --detach --name bb 149531492934.dkr.ecr.ap-south-1.amazonaws.com/unishaala-rest:latest`
 ##### Check the docker logs
 1. Connect to ec2                           `$ ssh -i "shaala-ec2.pem" ec2-user@ec2-15-206-160-16.ap-south-1.compute.amazonaws.com`
 2. list all running or stopped container    `$ docker ps -a`
 3. tail the docker running container logs   `$ docker logs --follow 116b9623f4bb`
 4. Remove all the container not in use      `$ docker system prune`
-
 #### Google cloud domain admin credentials
 ```html
 info@globalshaala.com
@@ -128,3 +128,11 @@ mvn spring-boot:run -Dspring-boot.run.profiles=dev
 ```text
 http://localhost:8080/swagger-ui.html
 ```
+
+
+#### docker learning
+
+How to create docker image
+1. create docker image ` docker build -t unishaala-rest:1 .`
+2. list all local docker image `docker image ls`
+3. 

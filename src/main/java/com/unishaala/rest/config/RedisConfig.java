@@ -15,12 +15,6 @@ public class RedisConfig {
     @Value("${spring.redis.port}")
     private int REDIS_PORT;
 
-//    @Bean
-//    public JedisConnectionFactory jedisConnectionFactory() {
-//        RedisStandaloneConfiguration config = new RedisStandaloneConfiguration(REDIS_HOST, REDIS_PORT);
-//        return new JedisConnectionFactory(config);
-//    }
-
     @Bean
     public RedisTemplate<String, Otp> redisTemplate(RedisConnectionFactory connectionFactory) {
         final RedisTemplate<String, Otp> template = new RedisTemplate<>();
