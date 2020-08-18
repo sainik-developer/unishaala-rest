@@ -123,13 +123,11 @@ mvn spring-boot:run -Dspring-boot.run.profiles=dev
 ```text
 -Dspring.profiles.active=dev
 ```
-
 #### How to access the openapi/swagger documentation
 ```text
-http://localhost:8080/swagger-ui.html
+Dev(local) -> http://localhost:8080/swagger-ui.html
+Prod(aws) -> http://ec2-13-126-124-216.ap-south-1.compute.amazonaws.com/swagger-ui/index.html?configUrl=/v3/api-docs/swagger-config
 ```
-
-
 #### docker learning
 
 How to create docker image
