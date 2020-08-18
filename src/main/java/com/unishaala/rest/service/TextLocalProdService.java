@@ -17,16 +17,16 @@ import org.springframework.web.util.UriComponentsBuilder;
 @Service
 @Profile(value = "prod")
 @RequiredArgsConstructor
-public class TextLocalProdService implements SmsService,OtpService {
+public class TextLocalProdService implements SmsService, OtpService {
     private final RestTemplate restTemplate;
 
-    @Value("{$(textlocal.sms.url)}")
+    @Value("${textlocal.sms.url}")
     private String TEXT_LOCAL_SMS_SEND_URL;
-    @Value("{$(textlocal.sms.template)}")
+    @Value("${textlocal.sms.template}")
     private String TEXT_LOCAL_TEMPLATE;
-    @Value("{$(textlocal.sms.sender)}")
+    @Value("${textlocal.sms.sender}")
     private String TEXT_LOCAL_SENDER;
-    @Value("{$(textlocal.sms.apikey)}")
+    @Value("${textlocal.sms.apikey}")
     private String TEXT_LOCAL_API_KEY;
 
     @Override
@@ -43,7 +43,7 @@ public class TextLocalProdService implements SmsService,OtpService {
         return true;
     }
 
-    public String generateOtp(){
+    public String generateOtp() {
         return String.valueOf((int) Math.floor(100000 + Math.random() * 900000));
     }
 
