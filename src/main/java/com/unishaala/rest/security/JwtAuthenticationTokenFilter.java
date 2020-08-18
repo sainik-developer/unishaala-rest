@@ -1,5 +1,6 @@
 package com.unishaala.rest.security;
 
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
@@ -23,7 +24,7 @@ public class JwtAuthenticationTokenFilter extends AbstractAuthenticationProcessi
 
 
         if (header == null || !header.startsWith("Bearer ")) {
-            throw new RuntimeException("JWT Token is missing");
+            throw new BadCredentialsException("JWT Token is missing");
         }
 
         String authenticationToken = header.substring(7);
