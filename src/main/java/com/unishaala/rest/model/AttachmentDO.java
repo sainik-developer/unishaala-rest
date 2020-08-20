@@ -11,14 +11,13 @@ import java.util.UUID;
 
 @Data
 @NoArgsConstructor
-@Entity(name = "teachers")
-public class TeacherDO {
+@Entity(name = "attachments")
+public class AttachmentDO {
     @Id
     @GeneratedValue(generator = "system-uuid")
     @GenericGenerator(name = "system-uuid", strategy = "uuid")
     private UUID id;
     private String name;
-    private String surName;
     private String description;
-    private String avatarUrl;
+    private String url;
 }
