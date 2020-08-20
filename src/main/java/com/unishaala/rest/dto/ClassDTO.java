@@ -17,6 +17,6 @@ public class ClassDTO {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private UUID id;
     @JsonProperty(value = "name")
-    @NotEmpty
+    @NotEmpty(message = "class name can't be empty. eg 10-A, 8-B where 10,8 are standards and A,B are sections")
     private String className;
 }
