@@ -20,7 +20,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.security.Principal;
 import java.util.UUID;
 
 @Log4j2
@@ -74,18 +73,5 @@ public class TeacherController {
         throw new NotFoundException("Teacher not found to modify profile pic!");
     }
 
-    @PostMapping("/upload/profile")
-    @PreAuthorize("hasRole('TEACHER')")
-    @Parameters({
-            @Parameter(name = "Authorization", description = "Bearer <jwt-token>",
-                    required = true, schema = @Schema(type = "string"), in = ParameterIn.HEADER)})
-    public BaseResponseDTO uploadOwnProfile(final Principal principal, @RequestParam("file") MultipartFile file) {
-        final UserDO userDO = userRepository.findById(UUID.fromString(principal.getName())).orElse(null);
-        if (userDO != null && userDO.getUserType() == UserType.TEACHER) {
-            final String avatarUrl = awss3Service.uploadFileInS3(file);
-            userDO.setAvatarUrl(avatarUrl);
-            return BaseResponseDTO.builder().success(true).data(UM.toTeacherDTO(userRepository.save(userDO))).build();
-        }
-        throw new NotFoundException("Teacher not found to modify profile avatar.Please report the incident!");
-    }
+
 }

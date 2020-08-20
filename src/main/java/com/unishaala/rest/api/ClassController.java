@@ -2,7 +2,6 @@ package com.unishaala.rest.api;
 
 import com.unishaala.rest.dto.BaseResponseDTO;
 import com.unishaala.rest.dto.ClassDTO;
-import com.unishaala.rest.dto.SchoolDTO;
 import com.unishaala.rest.exception.DuplicateException;
 import com.unishaala.rest.exception.NotFoundException;
 import com.unishaala.rest.mapper.ClassMapper;
