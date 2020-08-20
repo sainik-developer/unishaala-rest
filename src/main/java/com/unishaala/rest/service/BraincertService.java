@@ -42,7 +42,6 @@ public class BraincertService {
     @Value("${braincert.api.key}")
     private String BRAINCERT_API_KEY;
 
-
     public void scheduleBraincertClass(final SessionDO session) {
         final ResponseEntity<String> braincertResponseEntity =
                 restTemplate.exchange(UriComponentsBuilder.fromHttpUrl(BRAINCERT_SCHEDULE_URL)

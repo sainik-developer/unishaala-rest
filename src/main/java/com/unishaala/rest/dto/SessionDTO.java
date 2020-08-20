@@ -2,14 +2,10 @@ package com.unishaala.rest.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.unishaala.rest.model.ClassDO;
-import com.unishaala.rest.model.CourseDO;
-import com.unishaala.rest.model.SchoolDO;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Column;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
