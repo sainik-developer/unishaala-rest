@@ -27,5 +27,6 @@ public class UserDO {
     private String avatarUrl;
     @ManyToOne
     @JoinColumn(name = "class_id", referencedColumnName = "id", nullable = true)
+    // only for student
     private ClassDO relatedClassDO;
 }

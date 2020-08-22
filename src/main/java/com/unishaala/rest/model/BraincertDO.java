@@ -1,6 +1,5 @@
 package com.unishaala.rest.model;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
@@ -10,16 +9,19 @@ import java.util.UUID;
 
 @Data
 @NoArgsConstructor
-@Entity(name = "courses")
-public class CourseDO {
+@Entity(name = "braincerts")
+public class BraincertDO {
     @Id
     @GeneratedValue(generator = "system-uuid")
     @GenericGenerator(name = "system-uuid", strategy = "uuid")
     private UUID id;
-    private String name;
+    @Column(name = "is_teacher")
+    private boolean isTeacher;
     @OneToOne(optional = false)
-    @JoinColumn(name = "teacher_id", nullable = false)
-    private UserDO teacher;
-    private String details;
-    private String urlCourse;
+    @JoinColumn(name = "user_id", nullable = false)
+    private UserDO user;
+    @OneToOne(optional = false)
+    @JoinColumn(name = "session_id", nullable = false)
+    private SessionDO session;
+    private String url;
 }

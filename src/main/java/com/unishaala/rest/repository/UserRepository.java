@@ -10,5 +10,7 @@ import java.util.UUID;
 @Repository
 public interface UserRepository extends PagingAndSortingRepository<UserDO, UUID> {
     UserDO findByMobileNumberAndUserType(final String mobileNumber, final UserType userType);
-    
+
+    UserDO findByIdAndMobileNumberAndUserType(final UUID userId, final String mobileNumber, final UserType userType);
+
 }

@@ -17,11 +17,10 @@ public class ClassDO {
     @GeneratedValue(generator = "system-uuid")
     @GenericGenerator(name = "system-uuid", strategy = "uuid")
     private UUID id;
-    @Column(name = "class_name")
-    private String className;
+    private String name;
     @ManyToOne
-    @JoinColumn(name = "school_id", referencedColumnName = "id",nullable = false)
-    private SchoolDO schoolDO;
-    @OneToMany
-    private List<UserDO> userDOS;
+    @JoinColumn(name = "school_id", referencedColumnName = "id", nullable = false)
+    private SchoolDO school;
+    @OneToMany(fetch = FetchType.LAZY)
+    private List<UserDO> users;
 }

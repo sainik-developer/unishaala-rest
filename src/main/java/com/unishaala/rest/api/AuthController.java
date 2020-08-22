@@ -4,7 +4,7 @@ import com.unishaala.rest.dto.BaseResponseDTO;
 import com.unishaala.rest.dto.RequestLoginDTO;
 import com.unishaala.rest.enums.UserType;
 import com.unishaala.rest.exception.LoginException;
-import com.unishaala.rest.exception.UserNotFoundException;
+import com.unishaala.rest.exception.NotFoundException;
 import com.unishaala.rest.model.UserDO;
 import com.unishaala.rest.repository.UserRepository;
 import com.unishaala.rest.service.AuthService;
@@ -34,7 +34,7 @@ public class AuthController {
             authService.sendOtp(formattedPhoneNumber);
             return BaseResponseDTO.builder().success(true).build();
         }
-        throw new UserNotFoundException("phone Number does not belong to admin!");
+        throw new NotFoundException("phone Number does not belong to admin!");
     }
 
     @PostMapping("/teacher/sendotp")
@@ -45,7 +45,7 @@ public class AuthController {
             authService.sendOtp(formattedPhoneNumber);
             return BaseResponseDTO.builder().success(true).build();
         }
-        throw new UserNotFoundException("Phone number does not belong to teacher!");
+        throw new NotFoundException("Phone number does not belong to teacher!");
     }
 
     @PostMapping("/student/sendotp")
@@ -56,7 +56,7 @@ public class AuthController {
             authService.sendOtp(formattedPhoneNumber);
             return BaseResponseDTO.builder().success(true).build();
         }
-        throw new UserNotFoundException("Phone number does not belong to student!");
+        throw new NotFoundException("Phone number does not belong to student!");
     }
 
     @PostMapping("/admin/verify")

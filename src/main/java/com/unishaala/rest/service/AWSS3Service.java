@@ -20,7 +20,7 @@ import java.util.UUID;
 @Log4j2
 @Service
 @RequiredArgsConstructor
-public class AWSS3Services {
+public class AWSS3Service {
     private final AmazonS3 s3client;
 
     @Value("${amazonProperties.endpointUrl}")
