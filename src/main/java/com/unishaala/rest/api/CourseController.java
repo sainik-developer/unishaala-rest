@@ -2,6 +2,7 @@ package com.unishaala.rest.api;
 
 import com.unishaala.rest.dto.BaseResponseDTO;
 import com.unishaala.rest.dto.CourseDTO;
+import com.unishaala.rest.enums.UserType;
 import com.unishaala.rest.exception.NotFoundException;
 import com.unishaala.rest.mapper.CourseMapper;
 import com.unishaala.rest.model.CourseDO;
@@ -53,6 +54,7 @@ public class CourseController {
         return courseRepository.findById(courserId)
                 .flatMap(courseDo ->
                         userRepository.findById(courseDTO.getTeacherId())
+                                .filter(userDo -> userDo.getUserType() == UserType.TEACHER)
                                 .map(userDo -> {
                                     final CourseDO courseDO = CM.fromDTO(courseDTO);
                                     courseDO.setTeacher(userDo);
@@ -61,6 +63,4 @@ public class CourseController {
                                 .map(courseDto -> BaseResponseDTO.builder().success(true).data(courseDto).build()))
                 .orElseThrow(() -> new NotFoundException("Course/Teacher id not found!"));
     }
-
-
 }
