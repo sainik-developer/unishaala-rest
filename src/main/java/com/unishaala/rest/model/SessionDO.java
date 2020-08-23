@@ -1,6 +1,5 @@
 package com.unishaala.rest.model;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
@@ -22,14 +21,11 @@ public class SessionDO {
     private LocalDateTime startTime;
     @OneToOne(optional = false)
     @JoinColumn(name = "course_id", nullable = false)
-    private CourseDO courseDO;
-    @OneToOne(optional = false)
-    @JoinColumn(name = "school_id", nullable = false)
-    private SchoolDO schoolDO;
+    private CourseDO course;
     @OneToOne(optional = false)
     @JoinColumn(name = "class_id", nullable = false)
-    private ClassDO classDO;
-    @OneToMany
+    private ClassDO aClass;
+    @OneToMany(fetch = FetchType.LAZY)
     private List<AttachmentDO> attachments;
     @Column(name = "duration_in_min")
     private int durationInMin;

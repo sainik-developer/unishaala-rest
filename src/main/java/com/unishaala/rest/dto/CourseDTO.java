@@ -1,13 +1,10 @@
 package com.unishaala.rest.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.unishaala.rest.model.UserDO;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
 import javax.validation.constraints.NotBlank;
 import java.util.UUID;
 

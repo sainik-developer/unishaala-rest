@@ -1,9 +1,7 @@
 package com.unishaala.rest.mapper;
 
-import com.unishaala.rest.dto.SchoolDTO;
 import com.unishaala.rest.dto.TeacherDTO;
 import com.unishaala.rest.dto.UserDTO;
-import com.unishaala.rest.model.SchoolDO;
 import com.unishaala.rest.model.UserDO;
 import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;

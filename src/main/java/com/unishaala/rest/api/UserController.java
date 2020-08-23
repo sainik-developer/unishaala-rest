@@ -1,7 +1,6 @@
 package com.unishaala.rest.api;
 
 import com.unishaala.rest.dto.BaseResponseDTO;
-import com.unishaala.rest.enums.UserType;
 import com.unishaala.rest.exception.NotFoundException;
 import com.unishaala.rest.mapper.UserMapper;
 import com.unishaala.rest.model.UserDO;
@@ -13,7 +12,6 @@ import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;

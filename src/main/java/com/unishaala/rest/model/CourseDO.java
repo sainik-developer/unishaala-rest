@@ -1,6 +1,5 @@
 package com.unishaala.rest.model;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
@@ -17,7 +16,7 @@ public class CourseDO {
     @GenericGenerator(name = "system-uuid", strategy = "uuid")
     private UUID id;
     private String name;
-    @OneToOne(optional = false)
+    @OneToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "teacher_id", nullable = false)
     private UserDO teacher;
     private String details;
