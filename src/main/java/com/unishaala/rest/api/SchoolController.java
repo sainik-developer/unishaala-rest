@@ -26,7 +26,6 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class SchoolController {
     private final SchoolRepository schoolRepository;
-    private static SchoolMapper SM = com.unishaala.rest.mapper.SchoolMapper.INSTANCE;
 
     @GetMapping("/test")
     @Parameters({
@@ -44,7 +43,7 @@ public class SchoolController {
     public BaseResponseDTO addSchools(@RequestBody @Validated SchoolDTO schoolDTO) {
         final SchoolDO schoolDO = schoolRepository.findByName(schoolDTO.getName());
         if (schoolDO == null) {
-            return BaseResponseDTO.builder().data(SM.toDTO(schoolRepository.save(SM.fromDTO(schoolDTO)))).success(true).build();
+            return BaseResponseDTO.builder().data(SchoolMapper.INSTANCE.toDTO(schoolRepository.save(SchoolMapper.INSTANCE.fromDTO(schoolDTO)))).success(true).build();
         }
         throw new DuplicateException("School name has to be unique!");
     }
@@ -57,16 +56,14 @@ public class SchoolController {
     public BaseResponseDTO modifySchools(@PathVariable("schoolid") final UUID schoolId, @RequestBody @Validated SchoolDTO schoolDTO) {
         return schoolRepository.findById(schoolId)
                 .map(schoolDO -> {
-                    SM.update(schoolDO, schoolDTO);
+                    SchoolMapper.INSTANCE.update(schoolDO, schoolDTO);
                     return schoolDO;
                 })
                 .map(schoolDO -> schoolRepository.save(schoolDO))
-                .map(SM::toDTO)
+                .map(SchoolMapper.INSTANCE::toDTO)
                 .map(schoolDto -> BaseResponseDTO.builder().success(true).data(schoolDto).build())
                 .orElseThrow(() -> new NotFoundException("school id is not found!"));
     }
-
-
 
 
 }

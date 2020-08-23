@@ -1,12 +1,13 @@
 package com.unishaala.rest.mapper;
 
+import com.unishaala.rest.dto.StudentDTO;
 import com.unishaala.rest.dto.TeacherDTO;
 import com.unishaala.rest.dto.UserDTO;
 import com.unishaala.rest.model.UserDO;
 import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 
-@Mapper
+@Mapper(uses = ClassMapper.class)
 public interface UserMapper {
     UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
 
@@ -18,14 +19,15 @@ public interface UserMapper {
     @Mapping(target = "userType", defaultValue = "TEACHER")
     UserDO fromTeacherDTO(TeacherDTO teacherDTO);
 
-    @Mapping(target = "firstName", expression = "java(userName.split(\".\")[0])")
-    @Mapping(target = "lastName", expression = "java(userName.split(\".\")[1])")
+    @Mapping(target = "firstName", expression = "java(userDO.getUserName().split(\".\")[0])")
+    @Mapping(target = "lastName", expression = "java(userDO.getUserName().split(\".\")[1])")
     TeacherDTO toTeacherDTO(UserDO userDO);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    @Mapping(target = "userName", expression = "java(teacherDTO.getFirstName() + \".\" + teacherDTO.getLastName())")
+    @Mapping(target = "userName", expression = "java(fromTeacherDTO.getFirstName() + \".\" + fromTeacherDTO.getLastName())")
     void updateUserDO(@MappingTarget UserDO toUserDO, TeacherDTO fromTeacherDTO);
 
+    StudentDTO toStudentDTO(UserDO userDO);
 
-
+    UserDO fromStudentDTO(StudentDTO studentDTO);
 }

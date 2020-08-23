@@ -27,7 +27,6 @@ public class SessionService {
     private final SessionRepository sessionRepository;
     private final CourseRepository courseRepository;
     private final ClassRepository classRepository;
-    private static SessionMapper SM = SessionMapper.INSTANCE;
 
     public List<SessionDTO> createSession(final UUID teacherId, final SessionDTO sessionDTO) {
         final CourseDO courseDo = courseRepository.findById(sessionDTO.getCourseId()).orElse(null);
@@ -37,7 +36,7 @@ public class SessionService {
                 if (classDo != null) {
                     final Iterable<SessionDO> sessionDos = sessionRepository.saveAll(createConsideringRepetition(sessionDTO, courseDo, classDo));
                     sessionDos.forEach(this::handleBraincert);
-                    return SM.toDTOs(sessionDos);
+                    return SessionMapper.INSTANCE.toDTOs(sessionDos);
                 }
                 throw new SessionException("Invalid class is associated!");
             }
@@ -54,7 +53,7 @@ public class SessionService {
                 if (!sessionDTO.isAllDaysOrWorkingDays() && date.getDayOfWeek() == DayOfWeek.SUNDAY || date.getDayOfWeek() == DayOfWeek.SATURDAY) {
                     continue;
                 }
-                final SessionDO sessionDo = SM.fromDTO(sessionDTO);
+                final SessionDO sessionDo = SessionMapper.INSTANCE.fromDTO(sessionDTO);
                 sessionDo.setCourse(courseDO);
                 sessionDo.setAClass(classDO);
                 sessionDo.setStartTime(sessionDTO.getStartTime().plusDays(count));
@@ -62,7 +61,7 @@ public class SessionService {
                 count++;
             }
         } else {
-            final SessionDO sessionDo = SM.fromDTO(sessionDTO);
+            final SessionDO sessionDo = SessionMapper.INSTANCE.fromDTO(sessionDTO);
             sessionDo.setCourse(courseDO);
             sessionDo.setAClass(classDO);
             sessions.add(sessionDo);

@@ -27,7 +27,6 @@ import java.util.UUID;
 public class CourseController {
     private final UserRepository userRepository;
     private final CourseRepository courseRepository;
-    private static CourseMapper CM = CourseMapper.INSTANCE;
 
     @PostMapping("/add")
     @PreAuthorize("hasRole('ADMIN')")
@@ -37,9 +36,9 @@ public class CourseController {
     public BaseResponseDTO addCourse(@RequestBody @Validated CourseDTO courseDTO) {
         return userRepository.findById(courseDTO.getTeacherId())
                 .map(userDo -> {
-                    final CourseDO courseDO = CM.fromDTO(courseDTO);
+                    final CourseDO courseDO = CourseMapper.INSTANCE.fromDTO(courseDTO);
                     courseDO.setTeacher(userDo);
-                    return CM.toDTO(courseRepository.save(courseDO));
+                    return CourseMapper.INSTANCE.toDTO(courseRepository.save(courseDO));
                 })
                 .map(courseDto -> BaseResponseDTO.builder().success(true).data(courseDto).build())
                 .orElseThrow(() -> new NotFoundException("Teacher id not found!"));
@@ -56,9 +55,9 @@ public class CourseController {
                         userRepository.findById(courseDTO.getTeacherId())
                                 .filter(userDo -> userDo.getUserType() == UserType.TEACHER)
                                 .map(userDo -> {
-                                    final CourseDO courseDO = CM.fromDTO(courseDTO);
+                                    final CourseDO courseDO = CourseMapper.INSTANCE.fromDTO(courseDTO);
                                     courseDO.setTeacher(userDo);
-                                    return CM.toDTO(courseRepository.save(courseDO));
+                                    return CourseMapper.INSTANCE.toDTO(courseRepository.save(courseDO));
                                 })
                                 .map(courseDto -> BaseResponseDTO.builder().success(true).data(courseDto).build()))
                 .orElseThrow(() -> new NotFoundException("Course/Teacher id not found!"));

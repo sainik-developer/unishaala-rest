@@ -5,6 +5,7 @@ import com.unishaala.rest.dto.RequestLoginDTO;
 import com.unishaala.rest.enums.UserType;
 import com.unishaala.rest.exception.LoginException;
 import com.unishaala.rest.exception.NotFoundException;
+import com.unishaala.rest.mapper.UserMapper;
 import com.unishaala.rest.model.UserDO;
 import com.unishaala.rest.repository.UserRepository;
 import com.unishaala.rest.service.AuthService;
@@ -16,6 +17,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Log4j2
 @RestController
@@ -64,7 +68,10 @@ public class AuthController {
         final String formattedPhoneNumber = authService.getFormattedNumber(requestLoginDTO.getPhoneNumber());
         if (authService.verifyOtp(requestLoginDTO.getPhoneNumber(), requestLoginDTO.getOtp())) {
             final UserDO userDO = userRepository.findByMobileNumberAndUserType(formattedPhoneNumber, UserType.ADMIN);
-            return BaseResponseDTO.builder().success(true).data(jwtService.createToken(jwtService.userClaims(userDO.getId(), UserType.ADMIN), UserType.ADMIN)).build();
+            final Map<String, Object> data = new HashMap<>();
+            data.put("Authorization", jwtService.createToken(jwtService.userClaims(userDO.getId(), UserType.ADMIN), UserType.ADMIN));
+            data.put("details", UserMapper.INSTANCE.toDTO(userDO));
+            return BaseResponseDTO.builder().success(true).data(data).build();
         }
         throw new LoginException();
     }
@@ -74,7 +81,10 @@ public class AuthController {
         final String formattedPhoneNumber = authService.getFormattedNumber(requestLoginDTO.getPhoneNumber());
         if (authService.verifyOtp(requestLoginDTO.getPhoneNumber(), requestLoginDTO.getOtp())) {
             final UserDO userDO = userRepository.findByMobileNumberAndUserType(formattedPhoneNumber, UserType.TEACHER);
-            return BaseResponseDTO.builder().success(true).data(jwtService.createToken(jwtService.userClaims(userDO.getId(), UserType.TEACHER), UserType.TEACHER)).build();
+            final Map<String, Object> data = new HashMap<>();
+            data.put("Authorization", jwtService.createToken(jwtService.userClaims(userDO.getId(), UserType.TEACHER), UserType.TEACHER));
+            data.put("details", UserMapper.INSTANCE.toTeacherDTO(userDO));
+            return BaseResponseDTO.builder().success(true).data(data).build();
         }
         throw new LoginException();
     }
@@ -84,7 +94,10 @@ public class AuthController {
         final String formattedPhoneNumber = authService.getFormattedNumber(requestLoginDTO.getPhoneNumber());
         if (authService.verifyOtp(requestLoginDTO.getPhoneNumber(), requestLoginDTO.getOtp())) {
             final UserDO userDO = userRepository.findByMobileNumberAndUserType(formattedPhoneNumber, UserType.STUDENT);
-            return BaseResponseDTO.builder().success(true).data(jwtService.createToken(jwtService.userClaims(userDO.getId(), UserType.STUDENT), UserType.STUDENT)).build();
+            final Map<String, Object> data = new HashMap<>();
+            data.put("Authorization", jwtService.createToken(jwtService.userClaims(userDO.getId(), UserType.TEACHER), UserType.TEACHER));
+            data.put("details", UserMapper.INSTANCE.toStudentDTO(userDO));
+            return BaseResponseDTO.builder().success(true).data(data).build();
         }
         throw new LoginException();
     }

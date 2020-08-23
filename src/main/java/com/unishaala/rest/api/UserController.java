@@ -28,7 +28,6 @@ import java.util.UUID;
 public class UserController {
     private final UserRepository userRepository;
     private final AWSS3Service awss3Service;
-    private static UserMapper UM = UserMapper.INSTANCE;
 
     @PostMapping("/upload/profile")
     @Parameters({
@@ -39,7 +38,7 @@ public class UserController {
         if (userDO != null) {
             final String avatarUrl = awss3Service.uploadFileInS3(file);
             userDO.setAvatarUrl(avatarUrl);
-            return BaseResponseDTO.builder().success(true).data(UM.toDTO(userRepository.save(userDO))).build();
+            return BaseResponseDTO.builder().success(true).data(UserMapper.INSTANCE.toDTO(userRepository.save(userDO))).build();
         }
         throw new NotFoundException("User not found.Please report the incident!");
     }

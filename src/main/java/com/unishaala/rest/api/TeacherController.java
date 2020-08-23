@@ -29,7 +29,6 @@ import java.util.UUID;
 public class TeacherController {
     private final UserRepository userRepository;
     private final AWSS3Service awss3Service;
-    private static UserMapper UM = UserMapper.INSTANCE;
 
     @PostMapping("/add")
     @PreAuthorize("hasRole('ADMIN')")
@@ -39,7 +38,7 @@ public class TeacherController {
     public BaseResponseDTO addTeacher(@RequestBody @Validated TeacherDTO teacherDTO) {
         final UserDO userDO = userRepository.findByMobileNumberAndUserType(teacherDTO.getMobileNumber(), UserType.TEACHER);
         if (userDO == null) {
-            return BaseResponseDTO.builder().success(true).data(UM.toTeacherDTO(userRepository.save(UM.fromTeacherDTO(teacherDTO)))).build();
+            return BaseResponseDTO.builder().success(true).data(UserMapper.INSTANCE.toTeacherDTO(userRepository.save(UserMapper.INSTANCE.fromTeacherDTO(teacherDTO)))).build();
         }
         throw new DuplicateException("Teacher already exist with mobile number!");
     }
@@ -52,8 +51,8 @@ public class TeacherController {
     public BaseResponseDTO modifyTeacher(@PathVariable("teacher_id") final UUID teacherId, @RequestBody @Validated TeacherDTO teacherDTO) {
         final UserDO userDO = userRepository.findByIdAndMobileNumberAndUserType(teacherId, teacherDTO.getMobileNumber(), UserType.TEACHER);
         if (userDO != null) {
-            UM.updateUserDO(userDO, teacherDTO);
-            return BaseResponseDTO.builder().success(true).data(UM.toTeacherDTO(userRepository.save(userDO))).build();
+            UserMapper.INSTANCE.updateUserDO(userDO, teacherDTO);
+            return BaseResponseDTO.builder().success(true).data(UserMapper.INSTANCE.toTeacherDTO(userRepository.save(userDO))).build();
         }
         throw new NotFoundException("Teacher not found to modify!");
     }
@@ -68,7 +67,7 @@ public class TeacherController {
         if (userDO != null && userDO.getUserType() == UserType.TEACHER) {
             final String avatarUrl = awss3Service.uploadFileInS3(file);
             userDO.setAvatarUrl(avatarUrl);
-            return BaseResponseDTO.builder().success(true).data(UM.toTeacherDTO(userRepository.save(userDO))).build();
+            return BaseResponseDTO.builder().success(true).data(UserMapper.INSTANCE.toTeacherDTO(userRepository.save(userDO))).build();
         }
         throw new NotFoundException("Teacher not found to modify profile pic!");
     }

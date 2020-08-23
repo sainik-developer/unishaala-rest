@@ -28,7 +28,6 @@ import java.util.UUID;
 public class ClassController {
     private final ClassRepository classRepository;
     private final SchoolRepository schoolRepository;
-    private static ClassMapper CM = ClassMapper.INSTANCE;
 
     @PostMapping("/add")
     @PreAuthorize("hasRole('ADMIN')")
@@ -39,9 +38,9 @@ public class ClassController {
         if (schoolDO != null) {
             final ClassDO classDO = classRepository.findByNameAndSchool(classDTO.getName(), schoolDO);
             if (classDO == null) {
-                final ClassDO classDo = CM.fromDTO(classDTO);
+                final ClassDO classDo = ClassMapper.INSTANCE.fromDTO(classDTO);
                 classDo.setSchool(schoolDO);
-                return BaseResponseDTO.builder().data(CM.toDTO(classRepository.save(classDo))).success(true).build();
+                return BaseResponseDTO.builder().data(ClassMapper.INSTANCE.toDTO(classRepository.save(classDo))).success(true).build();
             }
             throw new DuplicateException("Duplicate course found!");
         }
@@ -57,8 +56,8 @@ public class ClassController {
         if (schoolDO != null) {
             final ClassDO classDO = classRepository.findById(classId).orElse(null);
             if (classDO != null) {
-                CM.update(classDO, classDTO);
-                return BaseResponseDTO.builder().data(CM.toDTO(classRepository.save(classDO))).success(true).build();
+                ClassMapper.INSTANCE.update(classDO, classDTO);
+                return BaseResponseDTO.builder().data(ClassMapper.INSTANCE.toDTO(classRepository.save(classDO))).success(true).build();
             }
             throw new NotFoundException("Class with given ID is not found!");
         }

@@ -7,7 +7,7 @@ import org.mapstruct.factory.Mappers;
 
 import java.util.List;
 
-@Mapper
+@Mapper(uses = {CourseMapper.class, ClassMapper.class})
 public interface SessionMapper {
     SessionMapper INSTANCE = Mappers.getMapper(SessionMapper.class);
 
