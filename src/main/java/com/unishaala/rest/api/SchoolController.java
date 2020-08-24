@@ -8,10 +8,6 @@ import com.unishaala.rest.mapper.SchoolMapper;
 import com.unishaala.rest.model.SchoolDO;
 import com.unishaala.rest.repository.SchoolRepository;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.Parameters;
-import io.swagger.v3.oas.annotations.enums.ParameterIn;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -50,9 +46,7 @@ public class SchoolController {
 
     @PutMapping("/modify/{schoolid}")
     @PreAuthorize("hasAuthority('ADMIN')")
-    @Parameters({
-            @Parameter(name = "Authorization", description = "Bearer <jwt-token>",
-                    required = true, schema = @Schema(type = "string"), in = ParameterIn.HEADER)})
+    @Operation(security = {@SecurityRequirement(name = "bearer")})
     public BaseResponseDTO modifySchools(@PathVariable("schoolid") final UUID schoolId, @RequestBody @Validated SchoolDTO schoolDTO) {
         return schoolRepository.findById(schoolId)
                 .map(schoolDO -> {
@@ -64,6 +58,4 @@ public class SchoolController {
                 .map(schoolDto -> BaseResponseDTO.builder().success(true).data(schoolDto).build())
                 .orElseThrow(() -> new NotFoundException("school id is not found!"));
     }
-
-
 }

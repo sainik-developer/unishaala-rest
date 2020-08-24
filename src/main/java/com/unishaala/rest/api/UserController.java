@@ -6,10 +6,8 @@ import com.unishaala.rest.mapper.UserMapper;
 import com.unishaala.rest.model.UserDO;
 import com.unishaala.rest.repository.UserRepository;
 import com.unishaala.rest.service.AWSS3Service;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.Parameters;
-import io.swagger.v3.oas.annotations.enums.ParameterIn;
-import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -30,9 +28,7 @@ public class UserController {
     private final AWSS3Service awss3Service;
 
     @PostMapping("/upload/profile")
-    @Parameters({
-            @Parameter(name = "Authorization", description = "Bearer <jwt-token>",
-                    required = true, schema = @Schema(type = "string"), in = ParameterIn.HEADER)})
+    @Operation(security = {@SecurityRequirement(name = "bearer")})
     public BaseResponseDTO uploadOwnProfile(final Principal principal, @RequestParam("file") MultipartFile file) {
         final UserDO userDO = userRepository.findById(UUID.fromString(principal.getName())).orElse(null);
         if (userDO != null) {
