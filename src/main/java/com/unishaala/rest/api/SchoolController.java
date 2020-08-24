@@ -7,12 +7,16 @@ import com.unishaala.rest.exception.NotFoundException;
 import com.unishaala.rest.mapper.SchoolMapper;
 import com.unishaala.rest.model.SchoolDO;
 import com.unishaala.rest.repository.SchoolRepository;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.apache.http.entity.ContentType;
+import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -22,21 +26,19 @@ import java.util.UUID;
 
 @Log4j2
 @RestController
-@RequestMapping("/rest/schools")
+@RequestMapping(value = "/rest/schools")
 @RequiredArgsConstructor
 public class SchoolController {
     private final SchoolRepository schoolRepository;
 
-    @GetMapping("/test")
-    @Parameters({
-            @Parameter(name = "Authorization", description = "Bearer <jwt-token>",
-                    required = true, schema = @Schema(type = "string"), in = ParameterIn.HEADER)})
+    @GetMapping("/test1")
+    @Operation(security = {@SecurityRequirement(name = "bearer")})
     public BaseResponseDTO test(final Principal principal) {
         return BaseResponseDTO.builder().success(true).data(principal.getName()).build();
     }
 
-    @PostMapping("/add")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping(value = "/add")
+    @PreAuthorize("hasAuthority('ADMIN')")
     @Parameters({
             @Parameter(name = "Authorization", description = "Bearer <jwt-token>",
                     required = true, schema = @Schema(type = "string"), in = ParameterIn.HEADER)})
@@ -49,7 +51,7 @@ public class SchoolController {
     }
 
     @PutMapping("/modify/{schoolid}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     @Parameters({
             @Parameter(name = "Authorization", description = "Bearer <jwt-token>",
                     required = true, schema = @Schema(type = "string"), in = ParameterIn.HEADER)})

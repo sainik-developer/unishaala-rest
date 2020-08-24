@@ -7,10 +7,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import sun.util.resources.LocaleData;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import java.time.LocalDate;
 import java.util.UUID;
 
 @Data
@@ -35,7 +35,7 @@ public class StudentDTO {
     @Email
     private String email;
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Asia/Kolkata")
-    private LocaleData dob;
+    private LocalDate dob;
     @NotBlank(message = "student full name can't be empty")
     private String fullName;
 }

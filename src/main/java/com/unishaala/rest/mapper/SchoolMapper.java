@@ -8,8 +8,11 @@ import org.mapstruct.factory.Mappers;
 @Mapper
 public interface SchoolMapper {
     SchoolMapper INSTANCE = Mappers.getMapper(SchoolMapper.class);
+
     SchoolDTO toDTO(final SchoolDO schoolDO);
+
     SchoolDO fromDTO(final SchoolDTO schoolDTO);
+
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
             nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS)
     void update(@MappingTarget SchoolDO toSchoolDO, SchoolDTO fromSchoolDTO);

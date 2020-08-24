@@ -31,7 +31,7 @@ public class TeacherController {
     private final AWSS3Service awss3Service;
 
     @PostMapping("/add")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("ADMIN")
     @Parameters({
             @Parameter(name = "Authorization", description = "Bearer <jwt-token>",
                     required = true, schema = @Schema(type = "string"), in = ParameterIn.HEADER)})
