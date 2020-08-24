@@ -34,7 +34,7 @@ public class StudentDTO {
     private UUID classId;
     @Email
     private String email;
-    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Asia/Kolkata")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate dob;
     @NotBlank(message = "student full name can't be empty")
     private String fullName;

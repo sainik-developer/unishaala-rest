@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.UUID;
 
 @Data
@@ -28,4 +29,8 @@ public class UserDO {
     @JoinColumn(name = "class_id", referencedColumnName = "id", nullable = true)
     // only for student
     private ClassDO relatedClassDO;
+    private String email;
+    private LocalDate dob;
+    private String fullName;
+
 }
