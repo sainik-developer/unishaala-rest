@@ -22,6 +22,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Log4j2
@@ -39,12 +40,11 @@ public class SchoolController {
 
     @PostMapping(value = "/add")
     @PreAuthorize("hasAuthority('ADMIN')")
-    @Parameters({
-            @Parameter(name = "Authorization", description = "Bearer <jwt-token>",
-                    required = true, schema = @Schema(type = "string"), in = ParameterIn.HEADER)})
+    @Operation(security = {@SecurityRequirement(name = "bearer")})
     public BaseResponseDTO addSchools(@RequestBody @Validated SchoolDTO schoolDTO) {
         final SchoolDO schoolDO = schoolRepository.findByName(schoolDTO.getName());
         if (schoolDO == null) {
+            schoolDTO.setCreatedDate(LocalDateTime.now());
             return BaseResponseDTO.builder().data(SchoolMapper.INSTANCE.toDTO(schoolRepository.save(SchoolMapper.INSTANCE.fromDTO(schoolDTO)))).success(true).build();
         }
         throw new DuplicateException("School name has to be unique!");
