@@ -1,5 +1,7 @@
 package com.unishaala.rest.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
@@ -10,7 +12,9 @@ import javax.persistence.Id;
 import java.util.UUID;
 
 @Data
+@Builder
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity(name = "attachments")
 public class AttachmentDO {
     @Id

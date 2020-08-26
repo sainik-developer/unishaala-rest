@@ -6,8 +6,8 @@ import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
 @Mapper
-public interface AttachementMapper {
-    AttachementMapper INSTANCE = Mappers.getMapper(AttachementMapper.class);
+public interface AttachmentMapper {
+    AttachmentMapper INSTANCE = Mappers.getMapper(AttachmentMapper.class);
 
     TeacherDTO toDTO(final AttachmentDO attachmentDO);
 
