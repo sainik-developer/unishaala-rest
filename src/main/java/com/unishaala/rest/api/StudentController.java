@@ -36,8 +36,7 @@ import java.util.UUID;
 public class StudentController {
     private final UserRepository userRepository;
     private final ClassRepository classRepository;
-    private final SessionRepository sessionRepository;
-    private BraincertRepository braincertRepository;
+
 
     @PostMapping("/register")
     public BaseResponseDTO registerStudent(@Validated @RequestBody StudentDTO studentDTO) {
@@ -56,24 +55,5 @@ public class StudentController {
         throw new DuplicateException("Student with given mobile number already exist!");
     }
 
-    @GetMapping("/sessions")
-    public BaseResponseDTO getAllSession(final Principal principal, @NotNull final Pageable pageable) {
-        final UserDO userDO = userRepository.findById(UUID.fromString(principal.getName())).orElse(null);
-        if (userDO != null && userDO.getRelatedClass() != null && userDO.getUserType() == UserType.STUDENT) {
-            final Page<SessionDO> sessionDos = sessionRepository.findByAClass(userDO.getRelatedClass(), pageable);
-            return BaseResponseDTO.builder()
-                    .success(true)
-                    .data(sessionDos
-                            .map(sessionDo -> {
-                                final BraincertDO braincertDO = braincertRepository.findByUserAndSession(userDO, sessionDo);
-                                if (braincertDO == null) {
-                                    throw new NotFoundException("Something went wrong braincert url not found!");
-                                }
-                                final SessionDTO sessionDTO = SessionMapper.INSTANCE.toDTO(sessionDo);
-                                sessionDTO.setBraincertUrl(braincertDO.getUrl());
-                                return sessionDo;
-                            })).build();
-        }
-        throw new NotFoundException("User is not not a student may be!");
-    }
+
 }
