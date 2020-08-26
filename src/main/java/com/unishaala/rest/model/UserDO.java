@@ -28,7 +28,7 @@ public class UserDO {
     @ManyToOne
     @JoinColumn(name = "class_id", referencedColumnName = "id", nullable = true)
     // only for student
-    private ClassDO relatedClassDO;
+    private ClassDO relatedClass;
     private String email;
     private LocalDate dob;
     private String fullName;

@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.UUID;
 
@@ -26,7 +27,7 @@ public class StudentDTO {
     private String mobileNumber;
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private UserType userType;
-    @JsonProperty(value = "avatar_url")
+    @JsonProperty(value = "avatar_url", access = JsonProperty.Access.READ_ONLY)
     private String avatarUrl;
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private ClassDTO aClass;
@@ -35,6 +36,7 @@ public class StudentDTO {
     @Email
     private String email;
     @JsonFormat(pattern = "yyyy-MM-dd")
+    @NotNull(message = "Student date of birth is mandatory")
     private LocalDate dob;
     @NotBlank(message = "student full name can't be empty")
     private String fullName;

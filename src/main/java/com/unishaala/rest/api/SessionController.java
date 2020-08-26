@@ -32,8 +32,8 @@ import java.util.UUID;
 @RequestMapping("/rest/sessions")
 @RequiredArgsConstructor
 public class SessionController {
-    private final SessionService sessionService;
     private final AWSS3Service awss3Service;
+    private final SessionService sessionService;
     private final SessionRepository sessionRepository;
     private final AttachmentRepository attachmentRepository;
 
