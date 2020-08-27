@@ -21,7 +21,7 @@ public class SchoolDTO {
     @NotBlank(message = "schools name can't be null")
     private String name;
     @JsonProperty(access = JsonProperty.Access.READ_ONLY, value = "created_date")
-    @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss Z", timezone = "Asia/Kolkata")
+    @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss")
     private LocalDateTime createdDate;
     @NotBlank(message = "schools name can't be null")
     private String address;

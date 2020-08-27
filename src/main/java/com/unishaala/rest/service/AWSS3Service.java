@@ -30,7 +30,8 @@ public class AWSS3Service {
 
     public String uploadFileInS3(final MultipartFile filePart) {
         final String s3key = UUID.randomUUID() + "_" + filePart.getName().replace(" ", "_");
-        final PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, s3key, convertMultiPartFileToFile(filePart)).withCannedAcl(CannedAccessControlList.PublicRead);
+        final PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, s3key, convertMultiPartFileToFile(filePart))
+                .withCannedAcl(CannedAccessControlList.PublicRead);
         PutObjectResult putObjectResult = s3client.putObject(putObjectRequest);
         return endpointUrl + s3key;
     }

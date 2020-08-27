@@ -9,10 +9,8 @@ import com.unishaala.rest.model.ClassDO;
 import com.unishaala.rest.model.SchoolDO;
 import com.unishaala.rest.repository.ClassRepository;
 import com.unishaala.rest.repository.SchoolRepository;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.Parameters;
-import io.swagger.v3.oas.annotations.enums.ParameterIn;
-import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -31,8 +29,7 @@ public class ClassController {
 
     @PostMapping("/add")
     @PreAuthorize("hasRole('ADMIN')")
-    @Parameters({@Parameter(name = "Authorization", description = "Bearer <jwt-token>",
-            required = true, schema = @Schema(type = "string"), in = ParameterIn.HEADER)})
+    @Operation(security = {@SecurityRequirement(name = "bearer")})
     public BaseResponseDTO addClass(@RequestBody @Validated ClassDTO classDTO) {
         final SchoolDO schoolDO = schoolRepository.findById(classDTO.getSchoolId()).orElse(null);
         if (schoolDO != null) {
@@ -49,8 +46,7 @@ public class ClassController {
 
     @PutMapping("/modify/{class_id}")
     @PreAuthorize("hasRole('ADMIN')")
-    @Parameters({@Parameter(name = "Authorization", description = "Bearer <jwt-token>",
-            required = true, schema = @Schema(type = "string"), in = ParameterIn.HEADER)})
+    @Operation(security = {@SecurityRequirement(name = "bearer")})
     public BaseResponseDTO modifySchools(@PathVariable("class_id") final UUID classId, @RequestBody @Validated ClassDTO classDTO) {
         final SchoolDO schoolDO = schoolRepository.findById(classDTO.getSchoolId()).orElse(null);
         if (schoolDO != null) {

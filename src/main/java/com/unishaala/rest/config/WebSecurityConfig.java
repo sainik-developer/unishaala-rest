@@ -1,6 +1,5 @@
 package com.unishaala.rest.config;
 
-import com.unishaala.rest.security.JwtAuthenticationEntryPoint;
 import com.unishaala.rest.security.JwtAuthenticationProvider;
 import com.unishaala.rest.security.JwtAuthenticationTokenFilter;
 import lombok.RequiredArgsConstructor;
@@ -28,31 +27,19 @@ import java.util.Collections;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private final JwtAuthenticationProvider authenticationProvider;
-    private final JwtAuthenticationEntryPoint entryPoint;
 
     @Bean
     public AuthenticationManager authenticationManager() {
         return new ProviderManager(Collections.singletonList(authenticationProvider));
     }
 
-    @Bean
-    public JwtAuthenticationTokenFilter authenticationTokenFilter() {
-        JwtAuthenticationTokenFilter filter = new JwtAuthenticationTokenFilter();
-        filter.setAuthenticationManager(authenticationManager());
-        return filter;
-    }
-
     @Override
     protected void configure(final HttpSecurity httpSecurity) throws Exception {
         httpSecurity.csrf().disable()
-                .authorizeRequests().antMatchers("**/rest/**").authenticated()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                .exceptionHandling().authenticationEntryPoint(entryPoint)
+                .antMatcher("/rest/**").authorizeRequests().anyRequest().authenticated()
                 .and()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-
-        httpSecurity.addFilterBefore(authenticationTokenFilter(), UsernamePasswordAuthenticationFilter.class);
-        httpSecurity.headers().cacheControl();
-
+                .addFilterBefore(new JwtAuthenticationTokenFilter(authenticationManager()), UsernamePasswordAuthenticationFilter.class);
     }
 }

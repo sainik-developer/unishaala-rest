@@ -22,4 +22,6 @@ public class RedisConfig {
         template.setValueSerializer(new GenericToStringSerializer<>(Object.class));
         return template;
     }
+
+
 }

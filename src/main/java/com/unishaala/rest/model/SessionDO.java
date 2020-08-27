@@ -19,7 +19,7 @@ public class SessionDO {
     private UUID id;
     @Column(name = "start_time")
     private LocalDateTime startTime;
-    @OneToOne(optional = false)
+    @OneToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "course_id", nullable = false)
     private CourseDO course;
     @OneToOne(optional = false)
