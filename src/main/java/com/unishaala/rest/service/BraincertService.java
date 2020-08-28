@@ -52,12 +52,12 @@ public class BraincertService {
             // student url are created
             try {
                 CreateBraincertClassResponseDTO createBraincertDTO = objectMapper.readValue(braincertResponseEntity.getBody(), CreateBraincertClassResponseDTO.class);
-                long totalCount = userRepository.countByRelatedClassDO(sessionDO.getAClass());
+                long totalCount = userRepository.countByRelatedClass(sessionDO.getAClass());
                 int pageCount = (int) Math.ceil(totalCount / 10);
                 int count = 0;
                 while (count > pageCount) {
                     final List<UserDO> users = userRepository
-                            .findByRelatedClassDO(sessionDO.getAClass(), PageRequest.of(count, 10));
+                            .findByRelatedClass(sessionDO.getAClass(), PageRequest.of(count, 10));
                     for (UserDO user : users) {
                         final String launchUrl = createBraincertLaunchUrl(user, sessionDO.getCourse().getName(),
                                 false, String.valueOf(sessionDO.getId()), createBraincertDTO.getClassId());

@@ -16,9 +16,9 @@ public interface UserRepository extends PagingAndSortingRepository<UserDO, UUID>
 
     UserDO findByIdAndMobileNumberAndUserType(final UUID userId, final String mobileNumber, final UserType userType);
 
-    List<UserDO> findByRelatedClassDO(final ClassDO classDo);
+    List<UserDO> findByRelatedClass(final ClassDO classDo);
 
-    long countByRelatedClassDO(final ClassDO classDo);
+    long countByRelatedClass(final ClassDO classDo);
 
-    List<UserDO> findByRelatedClassDO(final ClassDO classDo, Pageable pageable);
+    List<UserDO> findByRelatedClass(final ClassDO classDo, Pageable pageable);
 }
