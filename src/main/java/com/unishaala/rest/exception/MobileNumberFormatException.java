@@ -5,6 +5,6 @@ import lombok.RequiredArgsConstructor;
 
 @Data
 @RequiredArgsConstructor
-public class MobileNumberFormatException extends RuntimeException{
+public class MobileNumberFormatException extends RuntimeException {
     private final String message;
 }
