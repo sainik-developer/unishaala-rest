@@ -22,10 +22,12 @@ public class StudentDTO {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private UUID id;
     @NotBlank(message = "student name can't be null")
+    @JsonProperty(value = "user_name")
     private String userName;
     @NotBlank(message = "student mobile number can't be null")
+    @JsonProperty(value = "mobile_number")
     private String mobileNumber;
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY,value = "user_type")
     private UserType userType;
     @JsonProperty(value = "avatar_url", access = JsonProperty.Access.READ_ONLY)
     private String avatarUrl;
@@ -39,5 +41,6 @@ public class StudentDTO {
     @NotNull(message = "Student date of birth is mandatory")
     private LocalDate dob;
     @NotBlank(message = "student full name can't be empty")
+    @JsonProperty(value = "full_name")
     private String fullName;
 }
