@@ -43,11 +43,11 @@ public class SessionDTO {
     private int durationInMin;
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY, value = "is_repeat")
     private boolean isRepeat = false;
-    @JsonProperty(value = "end_time")
+    @JsonProperty(value = "end_date")
     @JsonFormat(pattern = "yyyy-MM-dd Z", timezone = "Asia/Kolkata")
     private LocalDate endDate;
     @JsonProperty(value = "all_or_working")
     private boolean isAllDaysOrWorkingDays = false;
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY, value = "braincert_url")
     private String braincertUrl;
 }
