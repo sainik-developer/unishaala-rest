@@ -29,7 +29,7 @@ public class TeacherController {
     private final AWSS3Service awss3Service;
 
     @PostMapping("/add")
-    @PreAuthorize("ADMIN")
+    @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(security = {@SecurityRequirement(name = "bearer")})
     public BaseResponseDTO addTeacher(@RequestBody @Validated TeacherDTO teacherDTO) {
         final UserDO userDO = userRepository.findByMobileNumberAndUserType(teacherDTO.getMobileNumber(), UserType.TEACHER);
@@ -40,7 +40,7 @@ public class TeacherController {
     }
 
     @PutMapping("/modify/{teacher_id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(security = {@SecurityRequirement(name = "bearer")})
     public BaseResponseDTO modifyTeacher(@PathVariable("teacher_id") final UUID teacherId, @RequestBody @Validated TeacherDTO teacherDTO) {
         final UserDO userDO = userRepository.findByIdAndMobileNumberAndUserType(teacherId, teacherDTO.getMobileNumber(), UserType.TEACHER);
@@ -52,7 +52,7 @@ public class TeacherController {
     }
 
     @PostMapping("/upload/profile/{teacher_id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(security = {@SecurityRequirement(name = "bearer")})
     public BaseResponseDTO uploadTeacherProfile(@PathVariable("teacher_id") final UUID teacherId, @RequestParam("file") MultipartFile file) {
         final UserDO userDO = userRepository.findById(teacherId).orElse(null);
