@@ -17,7 +17,6 @@ import java.io.IOException;
 public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
     private final AuthenticationManager authenticationManager;
 
-
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String header = httpServletRequest.getHeader("Authorization");
@@ -38,6 +37,5 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
         } catch (final AuthenticationException e) {
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, e.getMessage());
         }
-
     }
 }
