@@ -9,7 +9,6 @@ import java.util.List;
 
 @Data
 public class JwtUserDetails implements UserDetails {
-
     private String username;
     private String token;
     private Collection<? extends GrantedAuthority> authorities;
