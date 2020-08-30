@@ -38,7 +38,7 @@ public class SessionController {
     private final AttachmentRepository attachmentRepository;
 
     @PostMapping("/add")
-    @PreAuthorize("hasRole('TEACHER')")
+    @PreAuthorize("hasAuthority('TEACHER')")
     @Operation(security = {@SecurityRequirement(name = "bearer")})
     public BaseResponseDTO createSession(final Principal principal, @Validated @RequestBody SessionDTO sessionDTO) {
         return BaseResponseDTO.builder()
@@ -49,7 +49,7 @@ public class SessionController {
 
 
     @PostMapping(value = "/add/attachment/{session_id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @PreAuthorize("hasRole('TEACHER')")
+    @PreAuthorize("hasAuthority('TEACHER')")
     @Operation(security = {@SecurityRequirement(name = "bearer")})
     public BaseResponseDTO uploadOwnProfile(final Principal principal,
                                             @PathVariable("session_id") final UUID sessionId,
@@ -70,7 +70,7 @@ public class SessionController {
     }
 
     @DeleteMapping(value = "/remove/attachment/{session_id}/{attachment_id}")
-    @PreAuthorize("hasRole('TEACHER')")
+    @PreAuthorize("hasAuthority('TEACHER')")
     @Operation(security = {@SecurityRequirement(name = "bearer")})
     public BaseResponseDTO uploadOwnProfile(final Principal principal,
                                             @PathVariable("session_id") final UUID sessionId,
