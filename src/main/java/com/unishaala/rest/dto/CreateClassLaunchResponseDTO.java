@@ -11,6 +11,8 @@ public class CreateClassLaunchResponseDTO {
     @NotEmpty
     @JsonProperty(value = "class_id")
     private String classId;
+    @JsonProperty(value = "launch_url")
     private String launchurl;
+    @JsonProperty(value = "encryptedlaunch_url")
     private String encryptedlaunchurl;
 }
