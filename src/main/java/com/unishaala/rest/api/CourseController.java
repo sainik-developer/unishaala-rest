@@ -27,7 +27,7 @@ public class CourseController {
     private final CourseRepository courseRepository;
 
     @PostMapping("/add")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(security = {@SecurityRequirement(name = "bearer")})
     public BaseResponseDTO addCourse(@RequestBody @Validated CourseDTO courseDTO) {
         return userRepository.findById(courseDTO.getTeacherId())
@@ -41,7 +41,7 @@ public class CourseController {
     }
 
     @PutMapping("/modify/{courserId}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(security = {@SecurityRequirement(name = "bearer")})
     public BaseResponseDTO modifyCourse(@PathVariable("courserId") final UUID courserId, @RequestBody @Validated CourseDTO courseDTO) {
         return courseRepository.findById(courserId)
