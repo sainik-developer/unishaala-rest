@@ -35,11 +35,11 @@ public class SchoolController {
     @PostMapping(value = "/add")
     @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(security = {@SecurityRequirement(name = "bearer")})
-    public BaseResponseDTO addSchools(@RequestBody @Validated SchoolDTO schoolDTO) {
+    public SchoolDTO addSchools(@RequestBody @Validated SchoolDTO schoolDTO) {
         final SchoolDO schoolDO = schoolRepository.findByName(schoolDTO.getName());
         if (schoolDO == null) {
             schoolDTO.setCreatedDate(LocalDateTime.now());
-            return BaseResponseDTO.builder().data(SchoolMapper.INSTANCE.toDTO(schoolRepository.save(SchoolMapper.INSTANCE.fromDTO(schoolDTO)))).success(true).build();
+            return SchoolMapper.INSTANCE.toDTO(schoolRepository.save(SchoolMapper.INSTANCE.fromDTO(schoolDTO)));
         }
         throw new DuplicateException("School name has to be unique!");
     }
@@ -47,7 +47,7 @@ public class SchoolController {
     @PutMapping("/modify/{schoolid}")
     @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(security = {@SecurityRequirement(name = "bearer")})
-    public BaseResponseDTO modifySchools(@PathVariable("schoolid") final UUID schoolId, @RequestBody @Validated SchoolDTO schoolDTO) {
+    public SchoolDTO modifySchools(@PathVariable("schoolid") final UUID schoolId, @RequestBody @Validated SchoolDTO schoolDTO) {
         return schoolRepository.findById(schoolId)
                 .map(schoolDO -> {
                     SchoolMapper.INSTANCE.update(schoolDO, schoolDTO);
@@ -55,7 +55,6 @@ public class SchoolController {
                 })
                 .map(schoolDO -> schoolRepository.save(schoolDO))
                 .map(SchoolMapper.INSTANCE::toDTO)
-                .map(schoolDto -> BaseResponseDTO.builder().success(true).data(schoolDto).build())
                 .orElseThrow(() -> new NotFoundException("school id is not found!"));
     }
 }

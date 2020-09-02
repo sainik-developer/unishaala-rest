@@ -1,6 +1,5 @@
 package com.unishaala.rest.api;
 
-import com.unishaala.rest.dto.BaseResponseDTO;
 import com.unishaala.rest.dto.SessionDTO;
 import com.unishaala.rest.exception.NotFoundException;
 import com.unishaala.rest.mapper.SessionMapper;
@@ -24,6 +23,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import java.security.Principal;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.UUID;
 
 @Log4j2
@@ -40,21 +40,18 @@ public class SessionController {
     @PostMapping("/add")
     @PreAuthorize("hasAuthority('TEACHER')")
     @Operation(security = {@SecurityRequirement(name = "bearer")})
-    public BaseResponseDTO createSession(final Principal principal, @Validated @RequestBody SessionDTO sessionDTO) {
-        return BaseResponseDTO.builder()
-                .success(true)
-                .data(sessionService.createSession(UUID.fromString(principal.getName()), sessionDTO))
-                .build();
+    public List<SessionDTO> createSession(final Principal principal, @Validated @RequestBody SessionDTO sessionDTO) {
+        return sessionService.createSession(UUID.fromString(principal.getName()), sessionDTO);
     }
 
 
     @PostMapping(value = "/add/attachment/{session_id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasAuthority('TEACHER')")
     @Operation(security = {@SecurityRequirement(name = "bearer")})
-    public BaseResponseDTO uploadOwnProfile(final Principal principal,
-                                            @PathVariable("session_id") final UUID sessionId,
-                                            @Valid @NotBlank @RequestParam("name") final String attachmentName,
-                                            @RequestPart("file") MultipartFile file) {
+    public SessionDTO uploadSessionAttachment(final Principal principal,
+                                              @PathVariable("session_id") final UUID sessionId,
+                                              @Valid @NotBlank @RequestParam("name") final String attachmentName,
+                                              @RequestPart("file") MultipartFile file) {
         final SessionDO sessionDO = sessionRepository.findById(sessionId).orElse(null);
         if (sessionDO != null && sessionDO.getCourse().getTeacher().getId().equals(UUID.fromString(principal.getName()))) {
             final String attachmentUrl = awss3Service.uploadFileInS3(file);
@@ -64,7 +61,7 @@ public class SessionController {
             }
             sessionDO.getAttachments().add(attachmentDO);
             sessionRepository.save(sessionDO);
-            return BaseResponseDTO.builder().data(SessionMapper.INSTANCE.toDTO(sessionDO)).success(true).build();
+            return SessionMapper.INSTANCE.toDTO(sessionDO);
         }
         throw new NotFoundException("Only teacher who owns the Session can attach a doc!");
     }
@@ -72,16 +69,16 @@ public class SessionController {
     @DeleteMapping(value = "/remove/attachment/{session_id}/{attachment_id}")
     @PreAuthorize("hasAuthority('TEACHER')")
     @Operation(security = {@SecurityRequirement(name = "bearer")})
-    public BaseResponseDTO uploadOwnProfile(final Principal principal,
-                                            @PathVariable("session_id") final UUID sessionId,
-                                            @PathVariable("attachment_id") final UUID attachmentId) {
+    public SessionDTO removeSessionAttachment(final Principal principal,
+                                              @PathVariable("session_id") final UUID sessionId,
+                                              @PathVariable("attachment_id") final UUID attachmentId) {
         final SessionDO sessionDO = sessionRepository.findById(sessionId).orElse(null);
         final AttachmentDO attachmentDO = attachmentRepository.findById(attachmentId).orElse(null);
         if (sessionDO != null && sessionDO.getCourse().getTeacher().getId().equals(UUID.fromString(principal.getName())) && attachmentDO != null) {
             attachmentRepository.deleteById(attachmentId);
             sessionDO.getAttachments().remove(attachmentDO);
             sessionRepository.save(sessionDO);
-            return BaseResponseDTO.builder().data(SessionMapper.INSTANCE.toDTO(sessionDO)).success(true).build();
+            return SessionMapper.INSTANCE.toDTO(sessionDO);
         }
         throw new NotFoundException("Only teacher who owns the Session can remove a doc!");
     }

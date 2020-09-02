@@ -1,7 +1,7 @@
 package com.unishaala.rest.api;
 
-import com.unishaala.rest.dto.BaseResponseDTO;
 import com.unishaala.rest.dto.SessionDTO;
+import com.unishaala.rest.dto.UserDTO;
 import com.unishaala.rest.enums.UserType;
 import com.unishaala.rest.exception.NotFoundException;
 import com.unishaala.rest.mapper.SessionMapper;
@@ -40,34 +40,32 @@ public class UserController {
 
     @PostMapping(value = "/upload/avatar", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(security = {@SecurityRequirement(name = "bearer")})
-    public BaseResponseDTO uploadOwnProfile(final Principal principal, @RequestPart("file") MultipartFile file) {
+    public UserDTO uploadOwnProfile(final Principal principal, @RequestPart("file") MultipartFile file) {
         final UserDO userDO = userRepository.findById(UUID.fromString(principal.getName())).orElse(null);
         if (userDO != null) {
             final String avatarUrl = awss3Service.uploadFileInS3(file);
             userDO.setAvatarUrl(avatarUrl);
-            return BaseResponseDTO.builder().success(true).data(UserMapper.INSTANCE.toDTO(userRepository.save(userDO))).build();
+            return UserMapper.INSTANCE.toDTO(userRepository.save(userDO));
         }
         throw new NotFoundException("User not found.Please report the incident!");
     }
 
     @GetMapping("/sessions")
     @PreAuthorize("hasAuthority('TEACHER') or hasAuthority('STUDENT')")
-    public BaseResponseDTO getAllSession(final Principal principal, @NotNull final Pageable pageable) {
+    public Page<SessionDTO> getAllSession(final Principal principal, @NotNull final Pageable pageable) {
         final UserDO userDO = userRepository.findById(UUID.fromString(principal.getName())).orElse(null);
         if (userDO != null && userDO.getRelatedClass() != null && userDO.getUserType() == UserType.STUDENT || userDO.getUserType() == UserType.TEACHER) {
             final Page<SessionDO> sessionDos = sessionRepository.findByAClass(userDO.getRelatedClass(), pageable);
-            return BaseResponseDTO.builder()
-                    .success(true)
-                    .data(sessionDos
-                            .map(sessionDo -> {
-                                final BraincertDO braincertDO = braincertRepository.findByUserAndSession(userDO, sessionDo);
-                                if (braincertDO == null) {
-                                    throw new NotFoundException("Something went wrong braincert url not found!");
-                                }
-                                final SessionDTO sessionDTO = SessionMapper.INSTANCE.toDTO(sessionDo);
-                                sessionDTO.setBraincertUrl(braincertDO.getUrl());
-                                return sessionDo;
-                            })).build();
+            return sessionDos
+                    .map(sessionDo -> {
+                        final BraincertDO braincertDO = braincertRepository.findByUserAndSession(userDO, sessionDo);
+                        if (braincertDO == null) {
+                            throw new NotFoundException("Something went wrong braincert url not found!");
+                        }
+                        final SessionDTO sessionDTO = SessionMapper.INSTANCE.toDTO(sessionDo);
+                        sessionDTO.setBraincertUrl(braincertDO.getUrl());
+                        return sessionDTO;
+                    });
         }
         throw new NotFoundException("User is not not a student or teacher may be!");
     }

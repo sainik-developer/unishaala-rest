@@ -1,6 +1,5 @@
 package com.unishaala.rest.api;
 
-import com.unishaala.rest.dto.BaseResponseDTO;
 import com.unishaala.rest.dto.ClassDTO;
 import com.unishaala.rest.exception.DuplicateException;
 import com.unishaala.rest.exception.NotFoundException;
@@ -30,14 +29,14 @@ public class ClassController {
     @PostMapping("/add")
     @PreAuthorize("hasRole('ADMIN')")
     @Operation(security = {@SecurityRequirement(name = "bearer")})
-    public BaseResponseDTO addClass(@RequestBody @Validated ClassDTO classDTO) {
+    public ClassDTO addClass(@RequestBody @Validated ClassDTO classDTO) {
         final SchoolDO schoolDO = schoolRepository.findById(classDTO.getSchoolId()).orElse(null);
         if (schoolDO != null) {
             final ClassDO classDO = classRepository.findByNameAndSchool(classDTO.getName(), schoolDO);
             if (classDO == null) {
                 final ClassDO classDo = ClassMapper.INSTANCE.fromDTO(classDTO);
                 classDo.setSchool(schoolDO);
-                return BaseResponseDTO.builder().data(ClassMapper.INSTANCE.toDTO(classRepository.save(classDo))).success(true).build();
+                return ClassMapper.INSTANCE.toDTO(classRepository.save(classDo));
             }
             throw new DuplicateException("Duplicate course found!");
         }
@@ -47,13 +46,13 @@ public class ClassController {
     @PutMapping("/modify/{class_id}")
     @PreAuthorize("hasRole('ADMIN')")
     @Operation(security = {@SecurityRequirement(name = "bearer")})
-    public BaseResponseDTO modifySchools(@PathVariable("class_id") final UUID classId, @RequestBody @Validated ClassDTO classDTO) {
+    public ClassDTO modifySchools(@PathVariable("class_id") final UUID classId, @RequestBody @Validated ClassDTO classDTO) {
         final SchoolDO schoolDO = schoolRepository.findById(classDTO.getSchoolId()).orElse(null);
         if (schoolDO != null) {
             final ClassDO classDO = classRepository.findById(classId).orElse(null);
             if (classDO != null) {
                 ClassMapper.INSTANCE.update(classDO, classDTO);
-                return BaseResponseDTO.builder().data(ClassMapper.INSTANCE.toDTO(classRepository.save(classDO))).success(true).build();
+                return ClassMapper.INSTANCE.toDTO(classRepository.save(classDO));
             }
             throw new NotFoundException("Class with given ID is not found!");
         }

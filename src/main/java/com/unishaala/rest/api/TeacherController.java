@@ -1,6 +1,5 @@
 package com.unishaala.rest.api;
 
-import com.unishaala.rest.dto.BaseResponseDTO;
 import com.unishaala.rest.dto.TeacherDTO;
 import com.unishaala.rest.enums.UserType;
 import com.unishaala.rest.exception.DuplicateException;
@@ -31,10 +30,10 @@ public class TeacherController {
     @PostMapping("/add")
     @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(security = {@SecurityRequirement(name = "bearer")})
-    public BaseResponseDTO addTeacher(@RequestBody @Validated TeacherDTO teacherDTO) {
+    public TeacherDTO addTeacher(@RequestBody @Validated TeacherDTO teacherDTO) {
         final UserDO userDO = userRepository.findByMobileNumberAndUserType(teacherDTO.getMobileNumber(), UserType.TEACHER);
         if (userDO == null) {
-            return BaseResponseDTO.builder().success(true).data(UserMapper.INSTANCE.toTeacherDTO(userRepository.save(UserMapper.INSTANCE.fromTeacherDTO(teacherDTO)))).build();
+            return UserMapper.INSTANCE.toTeacherDTO(userRepository.save(UserMapper.INSTANCE.fromTeacherDTO(teacherDTO)));
         }
         throw new DuplicateException("Teacher already exist with mobile number!");
     }
@@ -42,11 +41,11 @@ public class TeacherController {
     @PutMapping("/modify/{teacher_id}")
     @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(security = {@SecurityRequirement(name = "bearer")})
-    public BaseResponseDTO modifyTeacher(@PathVariable("teacher_id") final UUID teacherId, @RequestBody @Validated TeacherDTO teacherDTO) {
+    public TeacherDTO modifyTeacher(@PathVariable("teacher_id") final UUID teacherId, @RequestBody @Validated TeacherDTO teacherDTO) {
         final UserDO userDO = userRepository.findByIdAndMobileNumberAndUserType(teacherId, teacherDTO.getMobileNumber(), UserType.TEACHER);
         if (userDO != null) {
             UserMapper.INSTANCE.updateUserDO(userDO, teacherDTO);
-            return BaseResponseDTO.builder().success(true).data(UserMapper.INSTANCE.toTeacherDTO(userRepository.save(userDO))).build();
+            return UserMapper.INSTANCE.toTeacherDTO(userRepository.save(userDO));
         }
         throw new NotFoundException("Teacher not found to modify!");
     }
@@ -54,12 +53,12 @@ public class TeacherController {
     @PostMapping("/upload/profile/{teacher_id}")
     @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(security = {@SecurityRequirement(name = "bearer")})
-    public BaseResponseDTO uploadTeacherProfile(@PathVariable("teacher_id") final UUID teacherId, @RequestParam("file") MultipartFile file) {
+    public TeacherDTO uploadTeacherProfile(@PathVariable("teacher_id") final UUID teacherId, @RequestParam("file") MultipartFile file) {
         final UserDO userDO = userRepository.findById(teacherId).orElse(null);
         if (userDO != null && userDO.getUserType() == UserType.TEACHER) {
             final String avatarUrl = awss3Service.uploadFileInS3(file);
             userDO.setAvatarUrl(avatarUrl);
-            return BaseResponseDTO.builder().success(true).data(UserMapper.INSTANCE.toTeacherDTO(userRepository.save(userDO))).build();
+            return UserMapper.INSTANCE.toTeacherDTO(userRepository.save(userDO));
         }
         throw new NotFoundException("Teacher not found to modify profile pic!");
     }

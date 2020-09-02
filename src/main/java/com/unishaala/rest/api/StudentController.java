@@ -1,6 +1,5 @@
 package com.unishaala.rest.api;
 
-import com.unishaala.rest.dto.BaseResponseDTO;
 import com.unishaala.rest.dto.StudentDTO;
 import com.unishaala.rest.enums.UserType;
 import com.unishaala.rest.exception.DuplicateException;
@@ -26,9 +25,8 @@ public class StudentController {
     private final UserRepository userRepository;
     private final ClassRepository classRepository;
 
-
     @PostMapping("/register")
-    public BaseResponseDTO registerStudent(@Validated @RequestBody StudentDTO studentDTO) {
+    public StudentDTO registerStudent(@Validated @RequestBody StudentDTO studentDTO) {
         final UserDO userDO = userRepository.findByMobileNumberAndUserType(studentDTO.getMobileNumber(), UserType.STUDENT);
         final ClassDO classDo = classRepository.findById(studentDTO.getClassId()).orElse(null);
         if (userDO == null && classDo != null) {
@@ -36,13 +34,8 @@ public class StudentController {
             studentDTO.setAClass(ClassMapper.INSTANCE.toDTO(classDo));
             final UserDO userDo = userRepository.save(
                     UserMapper.INSTANCE.fromStudentDTO(studentDTO));
-            return BaseResponseDTO.builder()
-                    .success(true)
-                    .data(UserMapper.INSTANCE.toStudentDTO(userDo))
-                    .build();
+            return UserMapper.INSTANCE.toStudentDTO(userDo);
         }
         throw new DuplicateException("Student with given mobile number already exist!");
     }
-
-
 }

@@ -1,12 +1,16 @@
 package com.unishaala.rest.api;
 
-import com.unishaala.rest.dto.BaseResponseDTO;
+import com.unishaala.rest.dto.ClassDTO;
+import com.unishaala.rest.dto.SchoolDTO;
 import com.unishaala.rest.exception.NotFoundException;
+import com.unishaala.rest.mapper.ClassMapper;
+import com.unishaala.rest.mapper.SchoolMapper;
 import com.unishaala.rest.model.SchoolDO;
 import com.unishaala.rest.repository.ClassRepository;
 import com.unishaala.rest.repository.SchoolRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,25 +31,21 @@ public class SearchController {
     private final ClassRepository classRepository;
 
     @GetMapping("/school")
-    public BaseResponseDTO searchSchool(@RequestParam(value = "key", defaultValue = "") final String key,
+    public Page<SchoolDTO> searchSchool(@RequestParam(value = "key", defaultValue = "") final String key,
                                         @RequestParam(value = "page", defaultValue = "0") final int page,
                                         @RequestParam(value = "size", defaultValue = "20") final int size) {
-        return BaseResponseDTO.builder()
-                .data(schoolRepository.findByNameContaining(key, PageRequest.of(page, size)))
-                .success(true)
-                .build();
+        return schoolRepository.findByNameContaining(key, PageRequest.of(page, size))
+                .map(SchoolMapper.INSTANCE::toDTO);
     }
 
     @GetMapping("/class")
-    public BaseResponseDTO searchClass(@NotNull @RequestParam("school-id") final UUID schoolId,
-                                       @RequestParam(value = "page", defaultValue = "0") final int page,
-                                       @RequestParam(value = "size", defaultValue = "20") final int size) {
+    public Page<ClassDTO> searchClass(@NotNull @RequestParam("school-id") final UUID schoolId,
+                                      @RequestParam(value = "page", defaultValue = "0") final int page,
+                                      @RequestParam(value = "size", defaultValue = "20") final int size) {
         final SchoolDO schoolDO = schoolRepository.findById(schoolId).orElse(null);
         if (schoolDO != null) {
-            return BaseResponseDTO.builder()
-                    .data(classRepository.findBySchoolContaining(schoolDO, PageRequest.of(page, size)))
-                    .success(true)
-                    .build();
+            return classRepository.findBySchoolContaining(schoolDO, PageRequest.of(page, size))
+                    .map(ClassMapper.INSTANCE::toDTO);
         }
         throw new NotFoundException("Invalid school Id");
     }
