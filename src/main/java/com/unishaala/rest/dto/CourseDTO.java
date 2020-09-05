@@ -26,5 +26,6 @@ public class CourseDTO {
     @NotBlank(message = "course detail is must!")
     private String details;
     @NotBlank(message = "course url is must")
+    @JsonProperty("url_course")
     private String urlCourse;
 }
