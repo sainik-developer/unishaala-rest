@@ -1,6 +1,7 @@
 package com.unishaala.rest.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.unishaala.rest.enums.UserType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -27,4 +28,6 @@ public class TeacherDTO {
     private String mobileNumber;
     @JsonProperty("avatar_url")
     private String avatarUrl;
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY, value = "user_type")
+    private UserType userType;
 }

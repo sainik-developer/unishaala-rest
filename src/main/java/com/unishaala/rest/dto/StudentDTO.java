@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.UUID;
@@ -27,13 +28,14 @@ public class StudentDTO {
     @NotBlank(message = "student mobile number can't be null")
     @JsonProperty(value = "mobile_number")
     private String mobileNumber;
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY,value = "user_type")
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY, value = "user_type")
     private UserType userType;
     @JsonProperty(value = "avatar_url", access = JsonProperty.Access.READ_ONLY)
     private String avatarUrl;
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private ClassDTO aClass;
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY, value = "class_id")
+    @NotEmpty(message = "class_id is required while creating student!")
     private UUID classId;
     @Email
     private String email;
