@@ -52,6 +52,7 @@ public class UserController {
 
     @GetMapping("/sessions")
     @PreAuthorize("hasAuthority('TEACHER') or hasAuthority('STUDENT')")
+    @Operation(security = {@SecurityRequirement(name = "bearer")})
     public Page<SessionDTO> getAllSession(final Principal principal, @NotNull final Pageable pageable) {
         final UserDO userDO = userRepository.findById(UUID.fromString(principal.getName())).orElse(null);
         if (userDO != null && userDO.getRelatedClass() != null && userDO.getUserType() == UserType.STUDENT || userDO.getUserType() == UserType.TEACHER) {
