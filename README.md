@@ -134,3 +134,7 @@ How to create docker image
 1. create docker image ` docker build -t unishaala-rest:1 .`
 2. list all local docker image `docker image ls`
 3. 
+docker run -e "SPRING_PROFILES_ACTIVE=prod" -p 80:8080 unishaala-rest:1
+docker build -t unishaala-rest-stage .
+docker tag unishaala-rest-stage:latest 149531492934.dkr.ecr.ap-south-1.amazonaws.com/unishaala-rest-stage:latest
+ docker push 149531492934.dkr.ecr.ap-south-1.amazonaws.com/unishaala-rest-stage:latest
