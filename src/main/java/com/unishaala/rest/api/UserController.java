@@ -1,7 +1,7 @@
 package com.unishaala.rest.api;
 
+import com.unishaala.rest.dto.AdminDTO;
 import com.unishaala.rest.dto.SessionDTO;
-import com.unishaala.rest.dto.UserDTO;
 import com.unishaala.rest.enums.UserType;
 import com.unishaala.rest.exception.NotFoundException;
 import com.unishaala.rest.mapper.SessionMapper;
@@ -40,7 +40,7 @@ public class UserController {
 
     @PostMapping(value = "/upload/avatar", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(security = {@SecurityRequirement(name = "bearer")})
-    public UserDTO uploadOwnProfile(final Principal principal, @RequestPart("file") MultipartFile file) {
+    public AdminDTO uploadOwnProfile(final Principal principal, @RequestPart("file") MultipartFile file) {
         final UserDO userDO = userRepository.findById(UUID.fromString(principal.getName())).orElse(null);
         if (userDO != null) {
             final String avatarUrl = awss3Service.uploadFileInS3(file);

@@ -14,7 +14,7 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserDTO {
+public class AdminDTO {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private UUID id;
     @JsonProperty(access = JsonProperty.Access.READ_ONLY, value = "user_name")

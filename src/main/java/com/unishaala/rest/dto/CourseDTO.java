@@ -19,7 +19,7 @@ public class CourseDTO {
     @NotBlank(message = "course name is must")
     private String name;
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private UserDTO teacher;
+    private TeacherDTO teacher;
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY, value = "teacher_id")
     @NotBlank(message = "teacher id is required")
     private UUID teacherId;
