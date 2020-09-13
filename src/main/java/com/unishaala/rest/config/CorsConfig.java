@@ -13,9 +13,9 @@ public class CorsConfig implements WebMvcConfigurer {
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
                 .allowedHeaders(HttpMethod.GET.name(),HttpMethod.POST.name(),HttpMethod.PUT.name(),HttpMethod.DELETE.name(),HttpMethod.PATCH.name())
-                .allowedOrigins("localhost:3000")
+                .allowedOrigins("http://localhost:3000")
                 .allowCredentials(true)
-                .allowedHeaders("Authorization","Accept","Content-Type")
+                .allowedHeaders("Authorization","Accept","Content-Type","cache-control")
                 .exposedHeaders("content-type","content-length");
     }
 }
