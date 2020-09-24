@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.Column;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
@@ -50,4 +51,6 @@ public class SessionDTO {
     private boolean isAllDaysOrWorkingDays = false;
     @JsonProperty(access = JsonProperty.Access.READ_ONLY, value = "braincert_url")
     private String braincertUrl;
+    @Column(name = "note")
+    private String note;
 }
