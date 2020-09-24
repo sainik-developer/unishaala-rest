@@ -44,7 +44,7 @@ public class StudentController {
     @GetMapping("/search")
     @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(security = {@SecurityRequirement(name = "bearer")})
-    public Page<StudentDTO> searchTeacherDTO(@RequestParam("student-name") final String studentName,
+    public Page<StudentDTO> searchTeacherDTO(@RequestParam(value = "student-name",required = false) final String studentName,
                                              @RequestParam(value = "page", defaultValue = "0") final int page,
                                              @RequestParam(value = "size", defaultValue = "20") final int size) {
         return userRepository.findByUserNameContainingAndUserType(studentName, UserType.STUDENT, PageRequest.of(page, size))

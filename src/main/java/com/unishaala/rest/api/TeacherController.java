@@ -68,10 +68,10 @@ public class TeacherController {
     @GetMapping("/search")
     @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(security = {@SecurityRequirement(name = "bearer")})
-    public Page<TeacherDTO> searchTeacherDTO(@RequestParam("teacher-name") final String teacherName,
+    public Page<TeacherDTO> searchTeacherDTO(@RequestParam(value = "teacher-name", required = false) final String teacherName,
                                              @RequestParam(value = "page", defaultValue = "0") final int page,
-                                             @RequestParam(value = "size", defaultValue = "20") final int size){
-        return userRepository.findByUserNameContainingAndUserType(teacherName,UserType.TEACHER, PageRequest.of(page, size))
+                                             @RequestParam(value = "size", defaultValue = "20") final int size) {
+        return userRepository.findByUserNameContainingAndUserType(teacherName, UserType.TEACHER, PageRequest.of(page, size))
                 .map(UserMapper.INSTANCE::toTeacherDTO);
     }
 }
