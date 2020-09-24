@@ -30,4 +30,6 @@ public class TeacherDTO {
     private String avatarUrl;
     @JsonProperty(access = JsonProperty.Access.READ_ONLY, value = "user_type")
     private UserType userType;
+    @JsonProperty("about_me")
+    private String aboutMe;
 }

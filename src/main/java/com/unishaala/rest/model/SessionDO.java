@@ -29,4 +29,6 @@ public class SessionDO {
     private List<AttachmentDO> attachments;
     @Column(name = "duration_in_min")
     private int durationInMin;
+    @Column(name = "note")
+    private String note;
 }

@@ -32,5 +32,7 @@ public class UserDO {
     private String email;
     private LocalDate dob;
     private String fullName;
-
+    // only for teacher
+    @Column(name = "about_me")
+    private String aboutMe;
 }
