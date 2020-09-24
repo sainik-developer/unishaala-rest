@@ -9,13 +9,15 @@ import com.unishaala.rest.model.ClassDO;
 import com.unishaala.rest.model.UserDO;
 import com.unishaala.rest.repository.ClassRepository;
 import com.unishaala.rest.repository.UserRepository;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Log4j2
 @RestController
@@ -37,5 +39,15 @@ public class StudentController {
             return UserMapper.INSTANCE.toStudentDTO(userDo);
         }
         throw new DuplicateException("Student with given mobile number already exist!");
+    }
+
+    @GetMapping("/search")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @Operation(security = {@SecurityRequirement(name = "bearer")})
+    public Page<StudentDTO> searchTeacherDTO(@RequestParam("student-name") final String studentName,
+                                             @RequestParam(value = "page", defaultValue = "0") final int page,
+                                             @RequestParam(value = "size", defaultValue = "20") final int size) {
+        return userRepository.findByUserNameContainingAndUserType(studentName, UserType.STUDENT, PageRequest.of(page, size))
+                .map(UserMapper.INSTANCE::toStudentDTO);
     }
 }

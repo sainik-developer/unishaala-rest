@@ -12,6 +12,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -61,5 +63,15 @@ public class TeacherController {
             return UserMapper.INSTANCE.toTeacherDTO(userRepository.save(userDO));
         }
         throw new NotFoundException("Teacher not found to modify profile pic!");
+    }
+
+    @GetMapping("/search")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @Operation(security = {@SecurityRequirement(name = "bearer")})
+    public Page<TeacherDTO> searchTeacherDTO(@RequestParam("teacher-name") final String teacherName,
+                                             @RequestParam(value = "page", defaultValue = "0") final int page,
+                                             @RequestParam(value = "size", defaultValue = "20") final int size){
+        return userRepository.findByUserNameContainingAndUserType(teacherName,UserType.TEACHER, PageRequest.of(page, size))
+                .map(UserMapper.INSTANCE::toTeacherDTO);
     }
 }
