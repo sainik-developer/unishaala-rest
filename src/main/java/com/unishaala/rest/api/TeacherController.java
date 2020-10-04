@@ -1,10 +1,12 @@
 package com.unishaala.rest.api;
 
+import com.unishaala.rest.dto.CourseDTO;
 import com.unishaala.rest.dto.SessionDTO;
 import com.unishaala.rest.dto.TeacherDTO;
 import com.unishaala.rest.enums.UserType;
 import com.unishaala.rest.exception.DuplicateException;
 import com.unishaala.rest.exception.NotFoundException;
+import com.unishaala.rest.mapper.CourseMapper;
 import com.unishaala.rest.mapper.SessionMapper;
 import com.unishaala.rest.mapper.UserMapper;
 import com.unishaala.rest.model.BraincertDO;
@@ -21,13 +23,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.validation.constraints.NotNull;
 import java.security.Principal;
 import java.util.List;
 import java.util.UUID;
@@ -89,15 +89,16 @@ public class TeacherController {
                 .map(UserMapper.INSTANCE::toTeacherDTO);
     }
 
-
     @GetMapping("/sessions")
     @PreAuthorize("hasAuthority('TEACHER')")
     @Operation(security = {@SecurityRequirement(name = "bearer")})
-    public Page<SessionDTO> getAllSession(final Principal principal, @NotNull final Pageable pageable) {
+    public Page<SessionDTO> getAllSession(final Principal principal,
+                                          @RequestParam(value = "page", defaultValue = "0") final int page,
+                                          @RequestParam(value = "size", defaultValue = "20") final int size) {
         final UserDO userDO = userRepository.findById(UUID.fromString(principal.getName())).orElse(null);
         final List<CourseDO> courseDOs = courseRepository.findByTeacher(userDO);
         if (userDO != null && userDO.getUserType() == UserType.TEACHER && courseDOs != null && !courseDOs.isEmpty()) {
-            return sessionRepository.findByCourseIn(courseDOs, pageable)
+            return sessionRepository.findByCourseIn(courseDOs, PageRequest.of(page, size))
                     .map(sessionDo -> {
                         final BraincertDO braincertDO = braincertRepository.findByUserAndSession(userDO, sessionDo);
                         if (braincertDO == null) {
@@ -109,5 +110,19 @@ public class TeacherController {
                     });
         }
         throw new NotFoundException("User is not not a teacher or has no course may be!");
+    }
+
+    @GetMapping("/courses")
+    @PreAuthorize("hasAuthority('TEACHER')")
+    @Operation(security = {@SecurityRequirement(name = "bearer")})
+    public Page<CourseDTO> getAllCourses(final Principal principal,
+                                         @RequestParam(value = "page", defaultValue = "0") final int page,
+                                         @RequestParam(value = "size", defaultValue = "20") final int size) {
+        final UserDO userDO = userRepository.findById(UUID.fromString(principal.getName())).orElse(null);
+        if (userDO != null && userDO.getUserType() == UserType.TEACHER) {
+            return courseRepository.findByTeacher(userDO, PageRequest.of(page, size))
+                    .map(CourseMapper.INSTANCE::toDTO);
+        }
+        throw new NotFoundException("User is not not a teacher!");
     }
 }

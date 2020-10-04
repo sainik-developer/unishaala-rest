@@ -12,13 +12,18 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.util.UUID;
 
 @Log4j2
+@Validated
 @RestController
 @RequestMapping("/rest/classes")
 @RequiredArgsConstructor
@@ -46,7 +51,8 @@ public class ClassController {
     @PutMapping("/modify/{class_id}")
     @PreAuthorize("hasRole('ADMIN')")
     @Operation(security = {@SecurityRequirement(name = "bearer")})
-    public ClassDTO modifySchools(@PathVariable("class_id") final UUID classId, @RequestBody @Validated ClassDTO classDTO) {
+    public ClassDTO modifySchools(@PathVariable("class_id") final UUID classId,
+                                  @RequestBody @Validated ClassDTO classDTO) {
         final SchoolDO schoolDO = schoolRepository.findById(classDTO.getSchoolId()).orElse(null);
         if (schoolDO != null) {
             final ClassDO classDO = classRepository.findById(classId).orElse(null);
@@ -57,5 +63,19 @@ public class ClassController {
             throw new NotFoundException("Class with given ID is not found!");
         }
         throw new NotFoundException("Associated school of class is not found!");
+    }
+
+    @GetMapping("/{school_id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    @Operation(security = {@SecurityRequirement(name = "bearer")})
+    public Page<ClassDTO> getClassBySchool(@NotEmpty @PathVariable("school_id") final UUID schoolId,
+                                           @RequestParam(value = "page", defaultValue = "0") final int page,
+                                           @RequestParam(value = "size", defaultValue = "20") final int size) {
+        final SchoolDO schoolDO = schoolRepository.findById(schoolId).orElse(null);
+        if (schoolDO != null) {
+            return classRepository.findBySchool(schoolDO, PageRequest.of(page, size)).
+                    map(ClassMapper.INSTANCE::toDTO);
+        }
+        throw new NotFoundException("School is found with given id!");
     }
 }

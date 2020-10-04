@@ -35,8 +35,6 @@ import java.util.UUID;
 public class UserController {
     private final UserRepository userRepository;
     private final AWSS3Service awss3Service;
-    private final SessionRepository sessionRepository;
-    private BraincertRepository braincertRepository;
 
     @PostMapping(value = "/upload/avatar", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(security = {@SecurityRequirement(name = "bearer")})

@@ -41,7 +41,8 @@ public class CourseController {
     @PutMapping("/modify/{courserId}")
     @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(security = {@SecurityRequirement(name = "bearer")})
-    public CourseDTO modifyCourse(@PathVariable("courserId") final UUID courserId, @RequestBody @Validated CourseDTO courseDTO) {
+    public CourseDTO modifyCourse(@PathVariable("courserId") final UUID courserId,
+                                  @RequestBody @Validated CourseDTO courseDTO) {
         return courseRepository.findById(courserId)
                 .flatMap(courseDo ->
                         userRepository.findById(courseDTO.getTeacherId())

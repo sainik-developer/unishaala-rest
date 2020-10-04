@@ -47,7 +47,8 @@ public class SchoolController {
     @PutMapping("/modify/{schoolid}")
     @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(security = {@SecurityRequirement(name = "bearer")})
-    public SchoolDTO modifySchools(@PathVariable("schoolid") final UUID schoolId, @RequestBody @Validated SchoolDTO schoolDTO) {
+    public SchoolDTO modifySchools(@PathVariable("schoolid") final UUID schoolId,
+                                   @RequestBody @Validated SchoolDTO schoolDTO) {
         return schoolRepository.findById(schoolId)
                 .map(schoolDO -> {
                     SchoolMapper.INSTANCE.update(schoolDO, schoolDTO);

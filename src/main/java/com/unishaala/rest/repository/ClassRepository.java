@@ -11,5 +11,5 @@ import java.util.UUID;
 public interface ClassRepository extends PagingAndSortingRepository<ClassDO, UUID> {
     ClassDO findByNameAndSchool(final String name, final SchoolDO schoolDO);
 
-    Page<ClassDO> findBySchoolContaining(final SchoolDO schoolDO, Pageable pageable);
+    Page<ClassDO> findBySchool(final SchoolDO schoolDO, Pageable pageable);
 }

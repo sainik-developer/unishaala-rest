@@ -40,12 +40,10 @@ public class SessionController {
     @PostMapping("/add")
     @PreAuthorize("hasAuthority('TEACHER')")
     @Operation(security = {@SecurityRequirement(name = "bearer")})
-    public List<SessionDTO> createSession(final Principal principal, @Validated @RequestBody SessionDTO sessionDTO) {
+    public List<SessionDTO> createSession(final Principal principal,
+                                          @Validated @RequestBody SessionDTO sessionDTO) {
         return sessionService.createSession(UUID.fromString(principal.getName()), sessionDTO);
     }
-
-
-
 
     @PostMapping(value = "/add/attachment/{session_id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasAuthority('TEACHER')")

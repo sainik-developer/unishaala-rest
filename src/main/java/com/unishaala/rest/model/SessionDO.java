@@ -14,8 +14,9 @@ import java.util.UUID;
 @NoArgsConstructor
 public class SessionDO {
     @Id
-    @GeneratedValue(generator = "system-uuid")
-    @GenericGenerator(name = "system-uuid", strategy = "uuid")
+    @GeneratedValue(generator = "hibernate-uuid")
+    @GenericGenerator(name = "uuid", strategy = "uuid2")
+    @Column(columnDefinition = "uuid", unique = true)
     private UUID id;
     @Column(name = "start_time")
     private LocalDateTime startTime;
