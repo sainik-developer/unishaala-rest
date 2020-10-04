@@ -21,6 +21,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -82,7 +83,7 @@ public class TeacherController {
     @GetMapping("/search")
     @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(security = {@SecurityRequirement(name = "bearer")})
-    public Page<TeacherDTO> searchTeacherDTO(@RequestParam(value = "teacher-name", required = false) final String teacherName,
+    public Page<TeacherDTO> searchTeacherDTO(@RequestParam(value = "teacher-name", required = false, defaultValue = StringUtils.EMPTY) final String teacherName,
                                              @RequestParam(value = "page", defaultValue = "0") final int page,
                                              @RequestParam(value = "size", defaultValue = "20") final int size) {
         return userRepository.findByUserNameContainingAndUserType(teacherName, UserType.TEACHER, PageRequest.of(page, size))

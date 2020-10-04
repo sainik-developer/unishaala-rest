@@ -38,10 +38,10 @@ public class CourseController {
                 .orElseThrow(() -> new NotFoundException("Teacher id not found!"));
     }
 
-    @PutMapping("/modify/{courserId}")
+    @PutMapping("/modify/{courser-id}")
     @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(security = {@SecurityRequirement(name = "bearer")})
-    public CourseDTO modifyCourse(@PathVariable("courserId") final UUID courserId,
+    public CourseDTO modifyCourse(@PathVariable("courser-id") final UUID courserId,
                                   @RequestBody @Validated CourseDTO courseDTO) {
         return courseRepository.findById(courserId)
                 .flatMap(courseDo ->
