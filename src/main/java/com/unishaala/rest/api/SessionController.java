@@ -45,6 +45,8 @@ public class SessionController {
     }
 
 
+
+
     @PostMapping(value = "/add/attachment/{session_id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasAuthority('TEACHER')")
     @Operation(security = {@SecurityRequirement(name = "bearer")})

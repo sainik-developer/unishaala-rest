@@ -19,8 +19,8 @@ public interface UserMapper {
     @Mapping(target = "userType", defaultValue = "TEACHER")
     UserDO fromTeacherDTO(TeacherDTO teacherDTO);
 
-    @Mapping(target = "firstName", expression = "java(userDO.getUserName().split(\".\")[0])")
-    @Mapping(target = "lastName", expression = "java(userDO.getUserName().split(\".\")[1])")
+    @Mapping(target = "firstName", expression = "java(userDO.getUserName().split(\"\\\\.\")[0])")
+    @Mapping(target = "lastName", expression = "java(userDO.getUserName().split(\"\\\\.\")[1])")
     TeacherDTO toTeacherDTO(UserDO userDO);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)

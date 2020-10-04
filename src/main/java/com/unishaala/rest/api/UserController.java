@@ -49,25 +49,4 @@ public class UserController {
         }
         throw new NotFoundException("User not found.Please report the incident!");
     }
-
-    @GetMapping("/sessions")
-    @PreAuthorize("hasAuthority('TEACHER') or hasAuthority('STUDENT')")
-    @Operation(security = {@SecurityRequirement(name = "bearer")})
-    public Page<SessionDTO> getAllSession(final Principal principal, @NotNull final Pageable pageable) {
-        final UserDO userDO = userRepository.findById(UUID.fromString(principal.getName())).orElse(null);
-        if (userDO != null && userDO.getRelatedClass() != null && userDO.getUserType() == UserType.STUDENT || userDO.getUserType() == UserType.TEACHER) {
-            final Page<SessionDO> sessionDos = sessionRepository.findByAClass(userDO.getRelatedClass(), pageable);
-            return sessionDos
-                    .map(sessionDo -> {
-                        final BraincertDO braincertDO = braincertRepository.findByUserAndSession(userDO, sessionDo);
-                        if (braincertDO == null) {
-                            throw new NotFoundException("Something went wrong braincert url not found!");
-                        }
-                        final SessionDTO sessionDTO = SessionMapper.INSTANCE.toDTO(sessionDo);
-                        sessionDTO.setBraincertUrl(braincertDO.getUrl());
-                        return sessionDTO;
-                    });
-        }
-        throw new NotFoundException("User is not not a student or teacher may be!");
-    }
 }

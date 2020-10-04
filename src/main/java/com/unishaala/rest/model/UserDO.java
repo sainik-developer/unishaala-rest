@@ -14,8 +14,9 @@ import java.util.UUID;
 @NoArgsConstructor
 public class UserDO {
     @Id
-    @GeneratedValue(generator = "system-uuid")
-    @GenericGenerator(name = "system-uuid", strategy = "uuid")
+    @GeneratedValue(generator = "hibernate-uuid")
+    @GenericGenerator(name = "uuid", strategy = "uuid2")
+    @Column(columnDefinition = "uuid", unique = true)
     private UUID id;
     @Column(name = "user_name")
     private String userName;
