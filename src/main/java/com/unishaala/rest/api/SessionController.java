@@ -1,6 +1,7 @@
 package com.unishaala.rest.api;
 
 import com.unishaala.rest.dto.SessionDTO;
+import com.unishaala.rest.exception.BadAccessException;
 import com.unishaala.rest.exception.NotFoundException;
 import com.unishaala.rest.mapper.SessionMapper;
 import com.unishaala.rest.model.AttachmentDO;
@@ -37,23 +38,29 @@ public class SessionController {
     private final SessionRepository sessionRepository;
     private final AttachmentRepository attachmentRepository;
 
-    @PostMapping("/add")
+    @PostMapping("/{teacher-id}")
     @PreAuthorize("hasAuthority('TEACHER')")
     @Operation(security = {@SecurityRequirement(name = "bearer")})
     public List<SessionDTO> createSession(final Principal principal,
+                                          @PathVariable("teacher-id") final UUID teacherId,
                                           @Validated @RequestBody SessionDTO sessionDTO) {
-        return sessionService.createSession(UUID.fromString(principal.getName()), sessionDTO);
+        if (principal.getName().equals(teacherId.toString())) {
+            return sessionService.createSession(teacherId, sessionDTO);
+        }
+        throw new BadAccessException("Illegal access!");
     }
 
-    @PostMapping(value = "/add/attachment/{session_id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/{teacher-id}/attachment/{session-id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasAuthority('TEACHER')")
     @Operation(security = {@SecurityRequirement(name = "bearer")})
     public SessionDTO uploadSessionAttachment(final Principal principal,
-                                              @PathVariable("session_id") final UUID sessionId,
+                                              @PathVariable("teacher-id") final UUID teacherId,
+                                              @PathVariable("session-id") final UUID sessionId,
                                               @Valid @NotBlank @RequestParam("name") final String attachmentName,
                                               @RequestPart("file") MultipartFile file) {
         final SessionDO sessionDO = sessionRepository.findById(sessionId).orElse(null);
-        if (sessionDO != null && sessionDO.getCourse().getTeacher().getId().equals(UUID.fromString(principal.getName()))) {
+        if (principal.getName().equals(teacherId.toString()) && sessionDO != null &&
+                sessionDO.getCourse().getTeacher().getId().equals(UUID.fromString(principal.getName()))) {
             final String attachmentUrl = awss3Service.uploadFileInS3(file);
             final AttachmentDO attachmentDO = attachmentRepository.save(AttachmentDO.builder().name(attachmentName).url(attachmentUrl).build());
             if (sessionDO.getAttachments() == null) {
@@ -66,15 +73,17 @@ public class SessionController {
         throw new NotFoundException("Only teacher who owns the Session can attach a doc!");
     }
 
-    @DeleteMapping(value = "/remove/attachment/{session_id}/{attachment_id}")
+    @DeleteMapping(value = "/{teacher-id}/attachment/{session-id}/{attachment-id}")
     @PreAuthorize("hasAuthority('TEACHER')")
     @Operation(security = {@SecurityRequirement(name = "bearer")})
     public SessionDTO removeSessionAttachment(final Principal principal,
-                                              @PathVariable("session_id") final UUID sessionId,
-                                              @PathVariable("attachment_id") final UUID attachmentId) {
+                                              @PathVariable("teacher-id") final UUID teacherId,
+                                              @PathVariable("session-id") final UUID sessionId,
+                                              @PathVariable("attachment-id") final UUID attachmentId) {
         final SessionDO sessionDO = sessionRepository.findById(sessionId).orElse(null);
         final AttachmentDO attachmentDO = attachmentRepository.findById(attachmentId).orElse(null);
-        if (sessionDO != null && sessionDO.getCourse().getTeacher().getId().equals(UUID.fromString(principal.getName())) && attachmentDO != null) {
+        if (principal.getName().equals(teacherId.toString()) && sessionDO != null &&
+                sessionDO.getCourse().getTeacher().getId().equals(UUID.fromString(principal.getName())) && attachmentDO != null) {
             attachmentRepository.deleteById(attachmentId);
             sessionDO.getAttachments().remove(attachmentDO);
             sessionRepository.save(sessionDO);

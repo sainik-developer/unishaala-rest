@@ -1,10 +1,7 @@
 package com.unishaala.rest.advice;
 
 import com.unishaala.rest.dto.BaseErrorDTO;
-import com.unishaala.rest.exception.DuplicateException;
-import com.unishaala.rest.exception.LoginException;
-import com.unishaala.rest.exception.MobileNumberFormatException;
-import com.unishaala.rest.exception.NotFoundException;
+import com.unishaala.rest.exception.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -33,6 +30,12 @@ public class AppErrorAdvice {
     @ExceptionHandler(DuplicateException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public BaseErrorDTO duplicateException(final Exception e) {
+        return new BaseErrorDTO(e.getMessage());
+    }
+
+    @ExceptionHandler(BadAccessException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public BaseErrorDTO badAccessException(final Exception e) {
         return new BaseErrorDTO(e.getMessage());
     }
 }

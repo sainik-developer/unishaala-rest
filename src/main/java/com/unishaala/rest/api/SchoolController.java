@@ -32,7 +32,7 @@ public class SchoolController {
         return BaseResponseDTO.builder().success(true).data(principal.getName()).build();
     }
 
-    @PostMapping(value = "/add")
+    @PostMapping(value = "/")
     @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(security = {@SecurityRequirement(name = "bearer")})
     public SchoolDTO addSchools(@RequestBody @Validated SchoolDTO schoolDTO) {
@@ -44,10 +44,10 @@ public class SchoolController {
         throw new DuplicateException("School name has to be unique!");
     }
 
-    @PutMapping("/modify/{schoolid}")
+    @PutMapping("/{school-id}")
     @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(security = {@SecurityRequirement(name = "bearer")})
-    public SchoolDTO modifySchools(@PathVariable("schoolid") final UUID schoolId,
+    public SchoolDTO modifySchools(@PathVariable("school-id") final UUID schoolId,
                                    @RequestBody @Validated SchoolDTO schoolDTO) {
         return schoolRepository.findById(schoolId)
                 .map(schoolDO -> {

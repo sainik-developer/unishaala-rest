@@ -25,7 +25,7 @@ public class CourseController {
     private final UserRepository userRepository;
     private final CourseRepository courseRepository;
 
-    @PostMapping("/add")
+    @PostMapping("/")
     @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(security = {@SecurityRequirement(name = "bearer")})
     public CourseDTO addCourse(@RequestBody @Validated CourseDTO courseDTO) {
@@ -38,7 +38,7 @@ public class CourseController {
                 .orElseThrow(() -> new NotFoundException("Teacher id not found!"));
     }
 
-    @PutMapping("/modify/{courser-id}")
+    @PutMapping("/{courser-id}")
     @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(security = {@SecurityRequirement(name = "bearer")})
     public CourseDTO modifyCourse(@PathVariable("courser-id") final UUID courserId,

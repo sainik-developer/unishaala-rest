@@ -33,10 +33,10 @@ public class SearchController {
     private final ClassRepository classRepository;
 
     @GetMapping("/school")
-    public Page<SchoolDTO> searchSchool(@RequestParam(value = "key", defaultValue = StringUtils.EMPTY, required = false) final String key,
+    public Page<SchoolDTO> searchSchool(@RequestParam(value = "name", defaultValue = StringUtils.EMPTY, required = false) final String name,
                                         @RequestParam(value = "page", defaultValue = "0", required = false) final int page,
                                         @RequestParam(value = "size", defaultValue = "20", required = false) final int size) {
-        return schoolRepository.findByNameContaining(key, PageRequest.of(page, size))
+        return schoolRepository.findByNameContaining(name, PageRequest.of(page, size))
                 .map(SchoolMapper.INSTANCE::toDTO);
     }
 

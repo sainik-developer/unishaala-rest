@@ -31,7 +31,7 @@ public class ClassController {
     private final ClassRepository classRepository;
     private final SchoolRepository schoolRepository;
 
-    @PostMapping("/add")
+    @PostMapping("/")
     @PreAuthorize("hasRole('ADMIN')")
     @Operation(security = {@SecurityRequirement(name = "bearer")})
     public ClassDTO addClass(@RequestBody @Validated ClassDTO classDTO) {
@@ -48,10 +48,10 @@ public class ClassController {
         throw new NotFoundException("Associated school of class is not found!");
     }
 
-    @PutMapping("/modify/{class_id}")
+    @PutMapping("/{class-id}")
     @PreAuthorize("hasRole('ADMIN')")
     @Operation(security = {@SecurityRequirement(name = "bearer")})
-    public ClassDTO modifySchools(@PathVariable("class_id") final UUID classId,
+    public ClassDTO modifySchools(@PathVariable("class-id") final UUID classId,
                                   @RequestBody @Validated ClassDTO classDTO) {
         final SchoolDO schoolDO = schoolRepository.findById(classDTO.getSchoolId()).orElse(null);
         if (schoolDO != null) {
@@ -65,10 +65,10 @@ public class ClassController {
         throw new NotFoundException("Associated school of class is not found!");
     }
 
-    @GetMapping("/{school_id}")
+    @GetMapping("")
     @PreAuthorize("hasRole('ADMIN')")
     @Operation(security = {@SecurityRequirement(name = "bearer")})
-    public Page<ClassDTO> getClassBySchool(@NotEmpty @PathVariable("school_id") final UUID schoolId,
+    public Page<ClassDTO> getClassBySchool(@NotEmpty @RequestParam("school-id") final UUID schoolId,
                                            @RequestParam(value = "page", defaultValue = "0") final int page,
                                            @RequestParam(value = "size", defaultValue = "20") final int size) {
         final SchoolDO schoolDO = schoolRepository.findById(schoolId).orElse(null);

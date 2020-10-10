@@ -25,6 +25,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.websocket.server.PathParam;
 import java.security.Principal;
 import java.util.UUID;
 
@@ -35,11 +36,10 @@ import java.util.UUID;
 public class StudentController {
     private final UserRepository userRepository;
     private final ClassRepository classRepository;
-    private final CourseRepository courseRepository;
     private final SessionRepository sessionRepository;
     private final BraincertRepository braincertRepository;
 
-    @PostMapping("/register")
+    @PostMapping("/")
     public StudentDTO registerStudent(@Validated @RequestBody StudentDTO studentDTO) {
         final UserDO userDO = userRepository.findByMobileNumberAndUserType(studentDTO.getMobileNumber(), UserType.STUDENT);
         final ClassDO classDo = classRepository.findById(studentDTO.getClassId()).orElse(null);
@@ -53,7 +53,7 @@ public class StudentController {
         throw new DuplicateException("Student with given mobile number already exist!");
     }
 
-    @GetMapping("/search")
+    @GetMapping("/")
     @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(security = {@SecurityRequirement(name = "bearer")})
     public Page<StudentDTO> searchTeacherDTO(@RequestParam(value = "student-name", required = false) final String studentName,
@@ -63,14 +63,15 @@ public class StudentController {
                 .map(UserMapper.INSTANCE::toStudentDTO);
     }
 
-    @GetMapping("/sessions")
+    @GetMapping("/{student-id}/sessions")
     @PreAuthorize("hasAuthority('STUDENT')")
     @Operation(security = {@SecurityRequirement(name = "bearer")})
     public Page<SessionDTO> getAllSession(final Principal principal,
-                                          @RequestParam(value = "page", defaultValue = "0") final int page,
-                                          @RequestParam(value = "size", defaultValue = "20") final int size) {
+                                          @PathParam("student-id") final UUID studentId,
+                                          @RequestParam(value = "page", defaultValue = "0", required = false) final int page,
+                                          @RequestParam(value = "size", defaultValue = "20", required = false) final int size) {
         final UserDO userDO = userRepository.findById(UUID.fromString(principal.getName())).orElse(null);
-        if (userDO != null && userDO.getRelatedClass() != null && userDO.getUserType() == UserType.STUDENT) {
+        if (principal.getName().equals(studentId.toString()) && userDO != null && userDO.getRelatedClass() != null) {
             final Page<SessionDO> sessionDos = sessionRepository.findByAClass(userDO.getRelatedClass(), PageRequest.of(page, size));
             return sessionDos
                     .map(sessionDo -> {
@@ -86,14 +87,15 @@ public class StudentController {
         throw new NotFoundException("User is not not a student may be!");
     }
 
-    @GetMapping("/courses")
+    @GetMapping("/{student-id}/courses")
     @PreAuthorize("hasAuthority('STUDENT')")
     @Operation(security = {@SecurityRequirement(name = "bearer")})
     public Page<CourseDTO> getAllCourse(final Principal principal,
+                                        @PathParam("student-id") final UUID studentId,
                                         @RequestParam(value = "page", defaultValue = "0") final int page,
                                         @RequestParam(value = "size", defaultValue = "20") final int size) {
         final UserDO userDO = userRepository.findById(UUID.fromString(principal.getName())).orElse(null);
-        if (userDO != null && userDO.getRelatedClass() != null && userDO.getUserType() == UserType.STUDENT) {
+        if (principal.getName().equals(studentId.toString()) && userDO != null && userDO.getRelatedClass() != null && userDO.getUserType() == UserType.STUDENT) {
             final Page<SessionDO> sessionDos = sessionRepository.findByAClass(userDO.getRelatedClass(), PageRequest.of(page, size));
             return sessionDos.map(SessionDO::getCourse)
                     .map(CourseMapper.INSTANCE::toDTO);

@@ -44,7 +44,7 @@ public class TeacherController {
     private final BraincertRepository braincertRepository;
     private final CourseRepository courseRepository;
 
-    @PostMapping("/add")
+    @PostMapping("/")
     @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(security = {@SecurityRequirement(name = "bearer")})
     public TeacherDTO addTeacher(@RequestBody @Validated TeacherDTO teacherDTO) {
@@ -55,10 +55,10 @@ public class TeacherController {
         throw new DuplicateException("Teacher already exist with mobile number!");
     }
 
-    @PutMapping("/modify/{teacher_id}")
+    @PutMapping("/{teacher-id}")
     @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(security = {@SecurityRequirement(name = "bearer")})
-    public TeacherDTO modifyTeacher(@PathVariable("teacher_id") final UUID teacherId, @RequestBody @Validated TeacherDTO teacherDTO) {
+    public TeacherDTO modifyTeacher(@PathVariable("teacher-id") final UUID teacherId, @RequestBody @Validated TeacherDTO teacherDTO) {
         final UserDO userDO = userRepository.findByIdAndMobileNumberAndUserType(teacherId, teacherDTO.getMobileNumber(), UserType.TEACHER);
         if (userDO != null) {
             UserMapper.INSTANCE.updateUserDO(userDO, teacherDTO);
@@ -67,10 +67,10 @@ public class TeacherController {
         throw new NotFoundException("Teacher not found to modify!");
     }
 
-    @PostMapping("/upload/profile/{teacher_id}")
+    @PostMapping("/{teacher-id}/profile")
     @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(security = {@SecurityRequirement(name = "bearer")})
-    public TeacherDTO uploadTeacherProfile(@PathVariable("teacher_id") final UUID teacherId, @RequestParam("file") MultipartFile file) {
+    public TeacherDTO uploadTeacherProfile(@PathVariable("teacher-id") final UUID teacherId, @RequestParam("file") MultipartFile file) {
         final UserDO userDO = userRepository.findById(teacherId).orElse(null);
         if (userDO != null && userDO.getUserType() == UserType.TEACHER) {
             final String avatarUrl = awss3Service.uploadFileInS3(file);
@@ -80,22 +80,23 @@ public class TeacherController {
         throw new NotFoundException("Teacher not found to modify profile pic!");
     }
 
-    @GetMapping("/search")
+    @GetMapping("")
     @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(security = {@SecurityRequirement(name = "bearer")})
     public Page<TeacherDTO> searchTeacherDTO(@RequestParam(value = "teacher-name", required = false, defaultValue = StringUtils.EMPTY) final String teacherName,
-                                             @RequestParam(value = "page", defaultValue = "0") final int page,
-                                             @RequestParam(value = "size", defaultValue = "20") final int size) {
+                                             @RequestParam(value = "page", defaultValue = "0", required = false) final int page,
+                                             @RequestParam(value = "size", defaultValue = "20", required = false) final int size) {
         return userRepository.findByUserNameContainingAndUserType(teacherName, UserType.TEACHER, PageRequest.of(page, size))
                 .map(UserMapper.INSTANCE::toTeacherDTO);
     }
 
-    @GetMapping("/sessions")
+    @GetMapping("/{teacher-id}/sessions")
     @PreAuthorize("hasAuthority('TEACHER')")
     @Operation(security = {@SecurityRequirement(name = "bearer")})
     public Page<SessionDTO> getAllSession(final Principal principal,
-                                          @RequestParam(value = "page", defaultValue = "0") final int page,
-                                          @RequestParam(value = "size", defaultValue = "20") final int size) {
+                                          @PathVariable("teacher-id") final UUID teacherId,
+                                          @RequestParam(value = "page", defaultValue = "0", required = false) final int page,
+                                          @RequestParam(value = "size", defaultValue = "20", required = false) final int size) {
         final UserDO userDO = userRepository.findById(UUID.fromString(principal.getName())).orElse(null);
         final List<CourseDO> courseDOs = courseRepository.findByTeacher(userDO);
         if (userDO != null && userDO.getUserType() == UserType.TEACHER && courseDOs != null && !courseDOs.isEmpty()) {
@@ -113,12 +114,13 @@ public class TeacherController {
         throw new NotFoundException("User is not not a teacher or has no course may be!");
     }
 
-    @GetMapping("/courses")
+    @GetMapping("/{teacher-id}/courses")
     @PreAuthorize("hasAuthority('TEACHER')")
     @Operation(security = {@SecurityRequirement(name = "bearer")})
     public Page<CourseDTO> getAllCourses(final Principal principal,
-                                         @RequestParam(value = "page", defaultValue = "0") final int page,
-                                         @RequestParam(value = "size", defaultValue = "20") final int size) {
+                                         @PathVariable("teacher-id") final UUID teacherId,
+                                         @RequestParam(value = "page", defaultValue = "0", required = false) final int page,
+                                         @RequestParam(value = "size", defaultValue = "20", required = false) final int size) {
         final UserDO userDO = userRepository.findById(UUID.fromString(principal.getName())).orElse(null);
         if (userDO != null && userDO.getUserType() == UserType.TEACHER) {
             return courseRepository.findByTeacher(userDO, PageRequest.of(page, size))
