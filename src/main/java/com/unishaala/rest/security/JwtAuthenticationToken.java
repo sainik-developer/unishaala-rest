@@ -21,20 +21,20 @@ public final class JwtAuthenticationToken extends AbstractAuthenticationToken {
         principal = null;
     }
 
-    public void setAuthenticated(final boolean isAuthenticated) throws IllegalArgumentException {
-        if (isAuthenticated) {
-            throw new IllegalArgumentException(
-                    "Cannot set this token to trusted - use constructor which takes a GrantedAuthority list instead");
-        }
-        super.setAuthenticated(false);
-    }
-
     public JwtAuthenticationToken(final UserDetails userDetails, final String token,
                                   final Collection<? extends GrantedAuthority> authorities) {
         super(authorities);
         principal = userDetails;
         credentials = token;
         super.setAuthenticated(true); // must use super, as we override
+    }
+
+    public void setAuthenticated(final boolean isAuthenticated) throws IllegalArgumentException {
+        if (isAuthenticated) {
+            throw new IllegalArgumentException(
+                    "Cannot set this token to trusted - use constructor which takes a GrantedAuthority list instead");
+        }
+        super.setAuthenticated(false);
     }
 
 }

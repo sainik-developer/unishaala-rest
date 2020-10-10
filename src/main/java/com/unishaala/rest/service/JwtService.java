@@ -15,6 +15,8 @@ import java.util.UUID;
 
 @Service
 public class JwtService {
+    public final static String JWT_CLAIM_ID = "id";
+    public final static String JWT_CLAIM_ROLE = "role";
     @Value("${jwt.key}")
     private String JWT_SIGN_KEY;
     @Value("${jwt.admin.timeout.days}")
@@ -23,9 +25,6 @@ public class JwtService {
     private int JWT_USER_EXPIRATION;
     @Value("${jwt.teacher.timeout.days}")
     private int JWT_TEACHER_EXPIRATION;
-
-    public final static String JWT_CLAIM_ID = "id";
-    public final static String JWT_CLAIM_ROLE = "role";
 
     public String createToken(final Claims claims, final UserType userType) {
         SecretKey key = Keys.hmacShaKeyFor(JWT_SIGN_KEY.getBytes());

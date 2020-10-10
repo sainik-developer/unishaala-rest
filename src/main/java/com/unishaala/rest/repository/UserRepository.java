@@ -21,5 +21,5 @@ public interface UserRepository extends PagingAndSortingRepository<UserDO, UUID>
 
     List<UserDO> findByRelatedClass(final ClassDO classDo, Pageable pageable);
 
-    Page<UserDO> findByUserNameContainingAndUserType(final String userName,final UserType userType, Pageable pageable);
+    Page<UserDO> findByUserNameContainingAndUserType(final String userName, final UserType userType, Pageable pageable);
 }

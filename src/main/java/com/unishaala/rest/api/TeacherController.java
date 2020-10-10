@@ -24,6 +24,7 @@ import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -67,10 +68,10 @@ public class TeacherController {
         throw new NotFoundException("Teacher not found to modify!");
     }
 
-    @PostMapping("/{teacher-id}/profile")
+    @PostMapping(value = "/{teacher-id}/profile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(security = {@SecurityRequirement(name = "bearer")})
-    public TeacherDTO uploadTeacherProfile(@PathVariable("teacher-id") final UUID teacherId, @RequestParam("file") MultipartFile file) {
+    public TeacherDTO uploadTeacherProfile(@PathVariable("teacher-id") final UUID teacherId, @RequestPart("file") MultipartFile file) {
         final UserDO userDO = userRepository.findById(teacherId).orElse(null);
         if (userDO != null && userDO.getUserType() == UserType.TEACHER) {
             final String avatarUrl = awss3Service.uploadFileInS3(file);

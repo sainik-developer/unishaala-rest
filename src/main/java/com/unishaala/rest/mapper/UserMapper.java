@@ -1,8 +1,8 @@
 package com.unishaala.rest.mapper;
 
+import com.unishaala.rest.dto.AdminDTO;
 import com.unishaala.rest.dto.StudentDTO;
 import com.unishaala.rest.dto.TeacherDTO;
-import com.unishaala.rest.dto.AdminDTO;
 import com.unishaala.rest.model.UserDO;
 import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;

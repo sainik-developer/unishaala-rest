@@ -28,10 +28,10 @@ import java.util.List;
 import java.util.UUID;
 
 @Log4j2
-@RestController
 @Validated
-@RequestMapping("/rest/sessions")
+@RestController
 @RequiredArgsConstructor
+@RequestMapping("/rest/sessions")
 public class SessionController {
     private final AWSS3Service awss3Service;
     private final SessionService sessionService;
