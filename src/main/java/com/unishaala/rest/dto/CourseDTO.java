@@ -25,7 +25,6 @@ public class CourseDTO {
     private UUID teacherId;
     @NotBlank(message = "course detail is must!")
     private String details;
-    @NotBlank(message = "course url is must")
     @JsonProperty("url_course_avatar")
     private String urlCourse;
 }

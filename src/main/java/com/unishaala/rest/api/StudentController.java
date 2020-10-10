@@ -50,7 +50,7 @@ public class StudentController {
                 .map(UserMapper.INSTANCE::toStudentDTO);
     }
 
-    @GetMapping("/{student-id}/session")
+    @GetMapping("/{student-id}/sessions")
     @PreAuthorize("hasAuthority('STUDENT')")
     @Operation(security = {@SecurityRequirement(name = "bearer")})
     public Page<SessionDTO> getAllSession(final Principal principal,

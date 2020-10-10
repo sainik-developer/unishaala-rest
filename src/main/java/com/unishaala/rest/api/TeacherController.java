@@ -41,8 +41,6 @@ import java.util.UUID;
 public class TeacherController {
     private final UserRepository userRepository;
     private final AWSS3Service awss3Service;
-    private final SessionRepository sessionRepository;
-    private final BraincertRepository braincertRepository;
     private final CourseRepository courseRepository;
 
     @PostMapping("/")
@@ -91,29 +89,7 @@ public class TeacherController {
                 .map(UserMapper.INSTANCE::toTeacherDTO);
     }
 
-    @GetMapping("/{teacher-id}/sessions")
-    @PreAuthorize("hasAuthority('TEACHER')")
-    @Operation(security = {@SecurityRequirement(name = "bearer")})
-    public Page<SessionDTO> getAllSession(final Principal principal,
-                                          @PathVariable("teacher-id") final UUID teacherId,
-                                          @RequestParam(value = "page", defaultValue = "0", required = false) final int page,
-                                          @RequestParam(value = "size", defaultValue = "20", required = false) final int size) {
-        final UserDO userDO = userRepository.findById(UUID.fromString(principal.getName())).orElse(null);
-        final List<CourseDO> courseDOs = courseRepository.findByTeacher(userDO);
-        if (userDO != null && userDO.getUserType() == UserType.TEACHER && courseDOs != null && !courseDOs.isEmpty()) {
-            return sessionRepository.findByCourseIn(courseDOs, PageRequest.of(page, size))
-                    .map(sessionDo -> {
-                        final BraincertDO braincertDO = braincertRepository.findByUserAndSession(userDO, sessionDo);
-                        if (braincertDO == null) {
-                            throw new NotFoundException("Something went wrong braincert url not found!");
-                        }
-                        final SessionDTO sessionDTO = SessionMapper.INSTANCE.toDTO(sessionDo);
-                        sessionDTO.setBraincertUrl(braincertDO.getUrl());
-                        return sessionDTO;
-                    });
-        }
-        throw new NotFoundException("User is not not a teacher or has no course may be!");
-    }
+
 
     @GetMapping("/{teacher-id}/courses")
     @PreAuthorize("hasAuthority('TEACHER')")
