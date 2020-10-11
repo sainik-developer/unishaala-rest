@@ -1,20 +1,14 @@
 package com.unishaala.rest.api;
 
 import com.unishaala.rest.dto.CourseDTO;
-import com.unishaala.rest.dto.SessionDTO;
 import com.unishaala.rest.dto.TeacherDTO;
 import com.unishaala.rest.enums.UserType;
 import com.unishaala.rest.exception.DuplicateException;
 import com.unishaala.rest.exception.NotFoundException;
 import com.unishaala.rest.mapper.CourseMapper;
-import com.unishaala.rest.mapper.SessionMapper;
 import com.unishaala.rest.mapper.UserMapper;
-import com.unishaala.rest.model.BraincertDO;
-import com.unishaala.rest.model.CourseDO;
 import com.unishaala.rest.model.UserDO;
-import com.unishaala.rest.repository.BraincertRepository;
 import com.unishaala.rest.repository.CourseRepository;
-import com.unishaala.rest.repository.SessionRepository;
 import com.unishaala.rest.repository.UserRepository;
 import com.unishaala.rest.service.AWSS3Service;
 import io.swagger.v3.oas.annotations.Operation;
@@ -31,7 +25,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.security.Principal;
-import java.util.List;
 import java.util.UUID;
 
 @Log4j2
@@ -90,7 +83,6 @@ public class TeacherController {
     }
 
 
-
     @GetMapping("/{teacher-id}/courses")
     @PreAuthorize("hasAuthority('TEACHER')")
     @Operation(security = {@SecurityRequirement(name = "bearer")})
@@ -99,7 +91,7 @@ public class TeacherController {
                                          @RequestParam(value = "page", defaultValue = "0", required = false) final int page,
                                          @RequestParam(value = "size", defaultValue = "20", required = false) final int size) {
         final UserDO userDO = userRepository.findById(UUID.fromString(principal.getName())).orElse(null);
-        if (userDO != null && userDO.getUserType() == UserType.TEACHER) {
+        if (teacherId.toString().equals(principal.getName()) && userDO != null && userDO.getUserType() == UserType.TEACHER) {
             return courseRepository.findByTeacher(userDO, PageRequest.of(page, size))
                     .map(CourseMapper.INSTANCE::toDTO);
         }

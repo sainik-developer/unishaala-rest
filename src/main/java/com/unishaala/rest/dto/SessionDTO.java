@@ -2,6 +2,7 @@ package com.unishaala.rest.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.unishaala.rest.validator.ValidUuid;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,7 +11,6 @@ import lombok.NoArgsConstructor;
 import javax.persistence.Column;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -27,12 +27,12 @@ public class SessionDTO {
     @JsonFormat(pattern = "yyyy-MM-dd hh:mm Z", timezone = "Asia/Kolkata")
     private LocalDateTime startTime;
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY, value = "course_id")
-    @NotBlank(message = "course id is required")
+    @ValidUuid(message = "course id is required!")
     private UUID courseId;
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private CourseDTO course;
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY, value = "class_id")
-    @NotBlank(message = "class id is required")
+    @ValidUuid(message = "class id is required!")
     private UUID classId;
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private ClassDTO aClass;

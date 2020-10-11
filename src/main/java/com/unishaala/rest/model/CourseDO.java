@@ -17,9 +17,10 @@ public class CourseDO {
     @Column(columnDefinition = "uuid", unique = true)
     private UUID id;
     private String name;
-    @OneToOne(optional = false, fetch = FetchType.LAZY)
-    @JoinColumn(name = "teacher_id", nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "teacher_id", referencedColumnName = "id", nullable = false)
     private UserDO teacher;
+    @Column(length = 5000)
     private String details;
     private String urlCourse;
 }

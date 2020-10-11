@@ -13,4 +13,6 @@ public interface CourseRepository extends PagingAndSortingRepository<CourseDO, U
     List<CourseDO> findByTeacher(final UserDO teacher);
 
     Page<CourseDO> findByTeacher(final UserDO teacher, final Pageable pageable);
+
+    CourseDO findByName(final String name);
 }

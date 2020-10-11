@@ -11,10 +11,13 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.UUID;
 
 @Log4j2
@@ -54,4 +57,15 @@ public class CourseController {
                                 }))
                 .orElseThrow(() -> new NotFoundException("Course/Teacher id not found!"));
     }
+
+    @GetMapping("")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @Operation(security = {@SecurityRequirement(name = "bearer")})
+    public Page<CourseDTO> getAllCourses(final Principal principal,
+                                         @RequestParam(value = "page", defaultValue = "0", required = false) final int page,
+                                         @RequestParam(value = "size", defaultValue = "20", required = false) final int size) {
+        return courseRepository.findAll(PageRequest.of(page, size))
+                .map(CourseMapper.INSTANCE::toDTO);
+    }
+
 }
