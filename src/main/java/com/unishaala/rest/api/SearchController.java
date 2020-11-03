@@ -8,6 +8,7 @@ import com.unishaala.rest.mapper.SchoolMapper;
 import com.unishaala.rest.model.SchoolDO;
 import com.unishaala.rest.repository.ClassRepository;
 import com.unishaala.rest.repository.SchoolRepository;
+import com.unishaala.rest.validator.ValidUuid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.StringUtils;
@@ -40,7 +41,7 @@ public class SearchController {
     }
 
     @GetMapping("/class")
-    public Page<ClassDTO> searchClass(@NotEmpty @RequestParam("school-id") final UUID schoolId,
+    public Page<ClassDTO> searchClass(@RequestParam("school-id") final UUID schoolId,
                                       @RequestParam(value = "page", defaultValue = "0", required = false) final int page,
                                       @RequestParam(value = "size", defaultValue = "20", required = false) final int size) {
         final SchoolDO schoolDO = schoolRepository.findById(schoolId).orElse(null);

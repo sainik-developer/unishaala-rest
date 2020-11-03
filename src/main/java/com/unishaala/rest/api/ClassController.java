@@ -31,7 +31,7 @@ public class ClassController {
     private final SchoolRepository schoolRepository;
 
     @PostMapping("/")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(security = {@SecurityRequirement(name = "bearer")})
     public ClassDTO addClass(@RequestBody @Validated ClassDTO classDTO) {
         final SchoolDO schoolDO = schoolRepository.findById(classDTO.getSchoolId()).orElse(null);
@@ -48,7 +48,7 @@ public class ClassController {
     }
 
     @PutMapping("/{class-id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(security = {@SecurityRequirement(name = "bearer")})
     public ClassDTO modifySchools(@PathVariable("class-id") final UUID classId,
                                   @RequestBody @Validated ClassDTO classDTO) {
@@ -65,9 +65,9 @@ public class ClassController {
     }
 
     @GetMapping("")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(security = {@SecurityRequirement(name = "bearer")})
-    public Page<ClassDTO> getClassBySchool(@NotEmpty @RequestParam("school-id") final UUID schoolId,
+    public Page<ClassDTO> getClassBySchool(@RequestParam("school-id") final UUID schoolId,
                                            @RequestParam(value = "page", defaultValue = "0") final int page,
                                            @RequestParam(value = "size", defaultValue = "20") final int size) {
         final SchoolDO schoolDO = schoolRepository.findById(schoolId).orElse(null);
